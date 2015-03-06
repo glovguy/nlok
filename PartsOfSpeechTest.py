@@ -8,22 +8,24 @@ KafkaText = "The first thing he wanted to do was to get up in peace without bein
 
 testText = "Siddhartha entered the chamber, where his father was sitting on a mat of bast, and stepped behind his father and remained standing there, until his father felt that someone was standing behind him. Quoth the Brahman: \'Is that you, Siddhartha? Then say what you came to say.\' Quoth Siddhartha: 'With your permission, my father. I came to tell you that it is my longing to leave your house tomorrow and go to the ascetics. My desire is to become a Samana. May my father not oppose this.\'"
 
-tokens = nltk.word_tokenize(testText)
+BenFranklinText = "About this time I met with an odd volume of the Spectator. It was the third. I had never before seen any of them. I bought it, read it over and over, and was much delighted with it. I thought the writing excellent, and wished, if possible, to imitate it. With this view I took some of the papers, and, making short hints of the sentiment in each sentence, laid them by a few days, and then, without looking at the book, try'd to compleat the papers again, by expressing each hinted sentiment at length, and as fully as it had been expressed before, in any suitable words that should come to hand. Then I compared my Spectator with the original, discovered some of my faults, and corrected them. But I found I wanted a stock of words, or a readiness in recollecting and using them, which I thought I should have acquired before that time if I had gone on making verses; since the continual occasion for words of the same import, but of different length, to suit the measure, or of different sound for the rhyme, would have laid me under a constant necessity of searching for variety, and also have tended to fix that variety in my mind, and make me master of it. Therefore I took some of the tales and turned them into verse; and, after a time, when I had pretty well forgotten the prose, turned them back again. I also sometimes jumbled my collections of hints into confusion, and after some weeks endeavored to reduce them into the best order, before I began to form the full sentences and compleat the paper. This was to teach me method in the arrangement of thoughts. By comparing my work afterwards with the original, I discovered many faults and amended them; but I sometimes had the pleasure of fancying that, in certain particulars of small import, I had been lucky enough to improve the method of the language, and this encouraged me to think I might possibly in time come to be a tolerable English writer, of which I was extremely ambitious. My time for these exercises and for reading was at night, after work or before it began in the morning, or on Sundays, when I contrived to be in the printing-house alone, evading as much as I could the common attendance on public worship which my father used to exact of me when I was under his care, and which indeed I still thought a duty, thought I could not, as it seemed to me, afford time to practise it."
 
-print "TOKENS"
-print tokens
+tokens = nltk.word_tokenize(BenFranklinText)
+
+#print "TOKENS"
+#print tokens
 
 pos_tagged_tokens = nltk.pos_tag(tokens)
 
 print "TAGGED PARAGRAPH"
 print pos_tagged_tokens
 
-grammar = "NP: {<DT>?<JJ>*<NN>}"
-
-cp = nltk.RegexpParser(grammar)
-result = cp.parse(pos_tagged_tokens)
-print "CHUNKED PARAGRAPH"
-print result
+# This is a test for chunking. Not working yet.
+#grammar = "NP: {<DT>?<JJ>*<NN>}"
+#cp = nltk.RegexpParser(grammar)
+#result = cp.parse(pos_tagged_tokens)
+#print "CHUNKED PARAGRAPH"
+#print result
 
 ## Grab all verbs and put them in a list
 spot = 0
@@ -34,14 +36,61 @@ for tag in pos_tagged_tokens:
         verbList.append(verb)
     spot += 1
 
-print "VERB LIST"
-print verbList
+#print "VERB LIST"
+#print verbList
+
+def ReturnSentece(word):
+    # This function prints a sentence when given a word with its location in the tokens list.
+    # it searches on either side for closing punctuation
+    
+    # Find where the sentence starts
+    startDisp = 0
+    while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and tokens[word[2]+startDisp][0] != "!" and tokens[word[2]+startDisp][0] != "?":
+        startDisp = startDisp - 1
+    startDisp = startDisp + 1
+    
+    # Find where the sentence ends
+    endDisp = 0
+    while tokens[word[2]+endDisp][0] != "." and tokens[word[2]+endDisp][0] != ";" and tokens[word[2]+endDisp][0] != "!" and tokens[word[2]+endDisp][0] != "?":
+        endDisp = endDisp + 1
+    endDisp = endDisp + 1
+    
+    # Smash the sentence together into a human-readable string
+    sentence = []
+    for i in range(endDisp - startDisp):
+        sentence.append(tokens[word[2]+startDisp+i])
+    sentence = ' '.join(sentence)
+    
+    # The above process adds unnecessary spaces before punctuation.
+    # Let's remove those.
+    sentence = sentence.replace(" .", ".")
+    sentence = sentence.replace(" ,", ",")
+    sentence = sentence.replace(" !", "!")
+    sentence = sentence.replace(" ;", ";")
+    sentence = sentence.replace(" :", ":")
+    sentence = sentence.replace(" ?", "?")
+    
+    return sentence
+    
 
 
 verb = []
-lookForThese = ["believe", "believes", "believed", "know", "knows", "knew", "perceive", "perceives", "perceive", "notice", "notices", "noticed", "remember", "remembers", "remembered", "consider", "considers", "considered", "think", "thinks", "thought", "imagine", "imagines", "imagined", "suspect", "suspects", "suppose", "assume", "presume", "surmise", "conclude", "deduce", "understand"]
+beliefWords = ["believe", "believes", "believed", "know", "knows", "knew", "perceive", "perceives", "perceive", "notice", "notices", "noticed", "remember", "remembers", "remembered", "consider", "considers", "considered", "think", "thinks", "thought", "imagine", "imagines", "imagined", "suspect", "suspects", "suppose", "assume", "presume", "surmise", "conclude", "deduce", "understand, judge, doubt"]
+
 for verb in verbList:
-    for testVerb in lookForThese:
+    for testVerb in beliefWords:
         if verb[0] == testVerb:
-            print "MATCH"
+            print "BELIEF"
             print verb
+            print ReturnSentece(verb)
+
+attitudeWords = ["want", "wanted", "wants", "wish", "wishes", "wished", "consider", "considers", "considered", "desire", "desires", "desired", "hope", "hoped", "hopes", "aspire", "aspired", "aspires", "fancy", "fancied", "fancies", "care", "cares", "cared", "like", "likes", "liked"]
+
+verb = []
+for verb in verbList:
+    for testVerb in attitudeWords:
+        if verb[0] == testVerb:
+            print "ATTITUDE"
+            print verb
+            print ReturnSentece(verb)
+

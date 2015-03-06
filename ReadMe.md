@@ -25,15 +25,19 @@ To recognize sentences which carry intent, we need a way of recognizing when a s
 In speech we only ever overtly say either the belief or attitude associated with some intent, the other description is typically left as implicit. These two halves are called “beliefs” and “attitudes” by Davidson.
 
 An example of a belief:
-> If you tell me you are easing the jib because you think that will stop the main from backing, I don’t need to be told you want to stop the main from backing […] (Davidson)
+> If you tell me you are easing the jib because you think that will stop the main from backing, I don’t need to be told you want to stop the main from backing […]. (Davidson)
+
 In this case, knowledge about the effect easing a job has on the main backing is all one needs to understand the intent behind someone’s actions. It is implicit in their description that they don’t want the main to back.
 
 An example of attitude:
 > […] if you say you are biting your thumb at me because you want to insult me, there is no point in adding that you think that by biting your thumb at me you will insult me. (Davidson)
+
 In this case, your intention is perfectly well translated by explaining what your attitude is. It’s not necessary to explain that you believe your action will accomplish that goal.
 
 So, all we have to do is write a program that recognizes these two sorts of sentences.
 
 ### Statements of belief
 
-This appears to be the easier one. If the statement is about belief, it should have a verb in it that is a rough synonym for belief: believe, know, perceive, notice, remember, and other synonyms and all conjugations of these verbs.
+This appears to be the easier one. [If the statement is about belief, it should have a verb in it that is a rough synonym for belief: believe, know, perceive, notice, remember, and other synonyms and all conjugations of these verbs.](http://en.wikipedia.org/wiki/Propositional_attitude)
+
+### Statements of attitude
