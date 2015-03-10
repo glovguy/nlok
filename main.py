@@ -1,5 +1,6 @@
 import nltk
 # -*- coding: utf-8 -*-
+import os
 
 from PrintingFunctions import *
 from IntentionDetection import *
@@ -19,7 +20,10 @@ try:
     text_file = open(fileName, "r")
 except:
     try:
-        fileName = "/TextExamples/" + fileName
+        print "Looking also in /TextExamples folder"
+        myCWD = os.getcwd()
+        fileName = myCWD + "/TextExamples/" + fileName
+        print fileName
         text_file = open(fileName, "r")
     except:
         quit("ERROR FINDING FILE")
