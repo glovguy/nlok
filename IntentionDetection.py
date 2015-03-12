@@ -43,10 +43,12 @@ def DetectIntentions(originalText):
     ############################################################
     
     def GrabSentence(word, capitalize = True, taggedVersion = False):
+        
         ## Find where the sentence starts
         startDisp = 0
         while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and tokens[word[2]+startDisp][0] != "!" and tokens[word[2]+startDisp][0] != "?":
             startDisp -= 1
+            if word[2]+startDisp < 0: break
             try:
                 tokens[word[2]+startDisp][0] != "."
             except:
@@ -89,7 +91,7 @@ def DetectIntentions(originalText):
             for i in range(endDisp - startDisp):
                 if startDisp == -i and capitalize == True:
                     # Capitalize the word passed to the function
-                    appendThis = (str.upper(pos_tagged_tokens[word[2]+startDisp+i][0]), pos_tagged_tokens[word[2]+startDisp+i][1])
+                    appendThis = [str.upper(pos_tagged_tokens[word[2]+startDisp+i][0]), pos_tagged_tokens[word[2]+startDisp+i][1]]
                     sentence.append(appendThis)
                 else:
                     sentence.append(pos_tagged_tokens[word[2]+startDisp+i])
@@ -99,6 +101,8 @@ def DetectIntentions(originalText):
     ###################################
     ## Detect verb beliefs/attitudes ##
     ###################################
+    
+    outputWordList = [] ## This will contain all of the words we find that signal a belief/attitude is present
     
     ## Grab all verbs and put them in a list
     spot = 0
@@ -119,7 +123,8 @@ def DetectIntentions(originalText):
             if str.lower(verb[0]) == testVerb:
                 #print "BELIEF"
                 #print verb
-                print GrabSentence(verb)
+                #print GrabSentence(verb)
+                outputWordList.append(verb)
     
     ## Find any attitude verbs
     attitudeVerbs = ["want", "wanted", "wants", "wish", "wishes", "wished", "consider", "considers", "considered", "desire", "desires", "desired", "hope", "hoped", "hopes", "aspire", "aspired", "aspires", "fancy", "fancied", "fancies", "care", "cares", "cared", "like", "likes", "liked"]
@@ -129,7 +134,8 @@ def DetectIntentions(originalText):
             if str.lower(verb[0]) == testVerb:
                 #print "ATTITUDE"
                 #print verb
-                print GrabSentence(verb)
+                #print GrabSentence(verb)
+                outputWordList.append(verb)
     
     #######################################
     ## Detect non-verb beliefs/attitudes ##
@@ -167,16 +173,19 @@ def DetectIntentions(originalText):
                 if eachWord[1] == "NN":
                     for eachBeliefNonverb in beliefNonVerbs:
                         if str.lower(eachWord[0]) == eachBeliefNonverb:
-                            print "FOUND A BELIEF"
-                            print eachWord[0]
-                            verb = [eachWord[0], eachWord[1], isVerb[2]]
-                            print GrabSentence(verb)
+                            #print "FOUND A BELIEF"
+                            #print eachWord[0]
+                            verb = [isVerb[0], isVerb[1], isVerb[2]]
+                            #print GrabSentence(verb)
+                            outputWordList.append(verb)
                     for eachAttitudeNonverb in attitudeNonVerbs:
                         if str.lower(eachWord[0]) == eachAttitudeNonverb:
-                            print "FOUND AN ATTITUDE"
-                            print eachWord[0]
-                            verb = [eachWord[0], eachWord[1], isVerb[2]]
-                            print GrabSentence(verb)
+                            #print "FOUND AN ATTITUDE"
+                            #print eachWord[0]
+                            verb = [isVerb[0], isVerb[1], isVerb[2]]
+                            #print GrabSentence(verb)
+                            outputWordList.append(verb)
+    return outputWordList
 
 
 #####################################
@@ -198,7 +207,7 @@ def countSentences(text, returnMarkers = False):
         findDisp += 1
     
     if markers == []:
-        markers.append(len(tokens)-1)
+        markers.append(len(tokens))
     elif markers[len(markers)-1] != len(tokens)-1:
         markers.append(len(tokens))
     

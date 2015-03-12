@@ -6,17 +6,17 @@ The aim is not to digest or understand the sentences, its goal is simply to labe
 
 ## Intentional sentences
 
-Intention can be roughly thought of as causal descriptions. They are part of our understanding of other minds, or more specifically about willfulness. (This is not to be confused with Bretano’s “intentionality”, which describes the nature of our mental states to be “directed at” some object.)
+Intentional sentences can be roughly thought of as causal descriptions of social phenomena. They are part of our understanding of other minds, or more specifically, about willfulness. (This is not to be confused with Bretano’s “intentionality”, which describes the nature of our mental states to be “directed at” some object.)
 
 There are three types of sentences that are grouped under the category of intentional:
 
-1. Descriptions of actions
-2. descriptions of intent
-3. and descriptions of future plans
+1. Descriptions of actions,
+2. descriptions of intent,
+3. and descriptions of future plans.
 
 It should be obvious that these are closely related, [though the exact way that they are is up for philosophical debate.](http://plato.stanford.edu/entries/intention/)
 
-## What to look for
+## What IntentionDetection.py looks for
 
 To recognize sentences which carry intent, we need a way of recognizing when a sentence has that sort of content. First, let’s consider sentences describing intent, which Davidson calls a “primary reason”.
 
@@ -41,3 +41,9 @@ So, all we have to do is write a program that recognizes these two sorts of sent
 This appears to be the easier one. [If the statement is about belief, it should have a verb in it that is a rough synonym for belief: believe, know, perceive, notice, remember, and other synonyms and all conjugations of these verbs.](http://en.wikipedia.org/wiki/Propositional_attitude)
 
 ### Statements of attitude
+
+Similar to the previous section, the program also checks all of the verbs in the passage if they match a list of ‘attitude’ verbs. For example: “want”, “wish”, “desire”, “hope”, “care”, “like”, and synonyms.
+
+### Detecting non-verb Constructions
+
+Believe it or not, but most statements of intention will be caught by the above two simple rules.

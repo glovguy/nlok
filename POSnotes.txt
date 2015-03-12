@@ -1,7 +1,14 @@
-Goals for script:
+Goals:
 	- Should work at least 90% of the time overall
 	- Very low false positive rate expected, no higher than 5%
 	- Not expected to work if the nltk POS tagging fails
+
+- - - -
+
+Tasks for script:
+	- Print all intentional sentences
+	- Count the number of sentences
+	- Return the density of intentional statements in sentences
 
 - - - -
 
@@ -32,6 +39,7 @@ A,B Any way to detect: "and about midnight, not having yet seen the city, some o
 A,D Didn’t detect: “…he had started to feel that the love of his father and…”
 	Again, requires good verb deconstruction.
 	Should I detect “feel that…” as a special case? It seems to denote a cognitive quality that simply “feel…” doesn’t.
+	(feel that, sense that, discern that, notice that, aware that, conscious that, hold that, maintain that, get the impression that, have a hunch that)
 
 - - - -
 
