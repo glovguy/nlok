@@ -5,6 +5,7 @@ import os
 from PrintingFunctions import *
 from IntentionDetection import *
 
+
 ################################
 ## Load text provided by user ##
 ################################
@@ -44,7 +45,10 @@ print "\n"
 if selectedFunction == 1:
     ## 1: Print all intentional sentences
     for eachParagraph in paragraphs:
-        print DetectIntentions(eachParagraph)
+        print eachParagraph
+        if len(eachParagraph) > 0 and eachParagraph != "\n":
+            print "Intentional Sentences:"
+            print DetectIntentions(eachParagraph)
 elif selectedFunction == 2:
     ## 2: Give the number of sentences in the entire document
     mySum = 0

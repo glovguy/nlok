@@ -16,11 +16,13 @@ def DetectIntentions(originalText):
     #returnSentence = []
     
     ## Tokenize
+    global tokens
     tokens = nltk.word_tokenize(originalText)
     #print "TOKENS"
     #print tokens
     
     ## Tag the tokens
+    global pos_tagged_tokens
     pos_tagged_tokens = nltk.pos_tag(tokens)
     #print "TAGGED PARAGRAPH"
     #print pos_tagged_tokens
@@ -46,18 +48,21 @@ def DetectIntentions(originalText):
         
         ## Find where the sentence starts
         startDisp = 0
-        while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and tokens[word[2]+startDisp][0] != "!" and tokens[word[2]+startDisp][0] != "?":
+        while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and (tokens[word[2]+startDisp][0] != "!" or tokens[word[2]+startDisp+1][0] != '"') and tokens[word[2]+startDisp][0] != "?":
             startDisp -= 1
             if word[2]+startDisp < 0: break
-            try:
-                tokens[word[2]+startDisp][0] != "."
-            except:
-                break
+        try:
+            if not (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
+                print "COMBINED EXCLAMATION AND QUOTE"
+                print tokens[word[2]+endDisp][0]
+                print tokens[word[2]+endDisp+1][0]
+        except:
+            print "end of string"
         startDisp += 1
         
         ## Find where the sentence ends
         endDisp = 0
-        while tokens[word[2]+endDisp][0] != "." and tokens[word[2]+endDisp][0] != ";" and tokens[word[2]+endDisp][0] != "!" and tokens[word[2]+endDisp][0] != "?":
+        while tokens[word[2]+endDisp][0] != "." and tokens[word[2]+endDisp][0] != ";" and (tokens[word[2]+endDisp][0] != "!" or tokens[word[2]+endDisp+1][0] != '"') and tokens[word[2]+endDisp][0] != "?":
             endDisp += 1
             try:
                 tokens[word[2]+endDisp][0] != "."
@@ -65,6 +70,13 @@ def DetectIntentions(originalText):
                 endDisp -= 1
                 break
         endDisp += 1
+        try:
+            if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
+                print "COMBINED EXCLAMATION AND QUOTE"
+                print tokens[word[2]+endDisp][0]
+                print tokens[word[2]+endDisp+1][0]
+        except:
+            print "end of string"
         
         ## Smash the sentence together into a human-readable string or isolated tagged sentence
         sentence = []
@@ -87,6 +99,7 @@ def DetectIntentions(originalText):
             sentence = sentence.replace(" 'd", "'d")
             sentence = sentence.replace(" 've", "'ve")
             sentence = sentence.replace(" n't", "n't")
+            sentence = sentence.replace(" '", "'")
         elif taggedVersion == True:
             for i in range(endDisp - startDisp):
                 if startDisp == -i and capitalize == True:
@@ -112,18 +125,13 @@ def DetectIntentions(originalText):
             verb =  [tag[0], tag[1], spot]
             verbList.append(verb)
         spot += 1
-    #print "VERB LIST"
-    #print verbList
         
     ## Find any belief verbs
-    beliefVerbs = ["believe", "believes", "believed", "believing", "know", "knows", "knew", "knowing", "perceive", "perceives", "perceive", "perceiving", "notice", "notices", "noticed", "noticing", "remember", "remembers", "remembered", "remembering", "think", "thinks", "thought", "thinking", "imagine", "imagines", "imagined", "imagining", "suspect", "suspects", "suppose", "suspecting", "assume", "presume", "surmise", "conclude", "deduce", "understand", "understands", "understood", "understanding", "judge", "doubt"]
+    beliefVerbs = ["believe", "believes", "believed", "believing", "know", "knows", "knew", "knowing", "perceive", "perceives", "perceive", "perceiving", "notice", "notices", "noticed", "noticing", "remember", "remembers", "remembered", "remembering", "imagine", "imagines", "imagined", "imagining", "suspect", "suspects", "suppose", "suspecting", "assume", "presume", "surmise", "conclude", "deduce", "understand", "understands", "understood", "understanding", "judge", "doubt", "thought"]
     verb = []
     for verb in verbList:
         for testVerb in beliefVerbs:
             if str.lower(verb[0]) == testVerb:
-                #print "BELIEF"
-                #print verb
-                #print GrabSentence(verb)
                 outputWordList.append(verb)
     
     ## Find any attitude verbs
@@ -132,9 +140,6 @@ def DetectIntentions(originalText):
     for verb in verbList:
         for testVerb in attitudeVerbs:
             if str.lower(verb[0]) == testVerb:
-                #print "ATTITUDE"
-                #print verb
-                #print GrabSentence(verb)
                 outputWordList.append(verb)
     
     #######################################
@@ -150,7 +155,7 @@ def DetectIntentions(originalText):
                 isVerbsFound.append(eachVerb)
     
     beliefNonVerbs = ["belief", "beliefs", "knowledge", "perception", "perceptions", "memory", "memories", "suspicion", "suspicions", "assumption", "assumptions", "presupposition", "presuppositions", "suppositions", "supposition", "conclusion", "conclusions", "understanding", "judgment", "doubt", "doubts"]
-    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares"]
+    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing"]
     
     ## “(PRP) (belief/attitude) is…”
     for isVerb in isVerbsFound:
@@ -165,27 +170,57 @@ def DetectIntentions(originalText):
         for eachResult in result:
             if str(eachResult).count('/') > 0:
                 foundChunks.append(eachResult)
-        #print "CHUNKS PRINT"
-        #print foundChunks
         ## Check if the subject is a belief/attitude word
         for eachChunk in foundChunks:
             for eachWord in eachChunk:
                 if eachWord[1] == "NN":
                     for eachBeliefNonverb in beliefNonVerbs:
                         if str.lower(eachWord[0]) == eachBeliefNonverb:
-                            #print "FOUND A BELIEF"
-                            #print eachWord[0]
                             verb = [isVerb[0], isVerb[1], isVerb[2]]
-                            #print GrabSentence(verb)
                             outputWordList.append(verb)
                     for eachAttitudeNonverb in attitudeNonVerbs:
                         if str.lower(eachWord[0]) == eachAttitudeNonverb:
-                            #print "FOUND AN ATTITUDE"
-                            #print eachWord[0]
                             verb = [isVerb[0], isVerb[1], isVerb[2]]
-                            #print GrabSentence(verb)
                             outputWordList.append(verb)
-    return outputWordList
+    
+    ## Find 'that' conjunctions
+    index = 0
+    THATWordsFound = []
+    for eachTaggedWord in pos_tagged_tokens:
+        if str.lower(eachTaggedWord[0]) == "that":
+            word = [eachTaggedWord[0], eachTaggedWord[1], index]
+            THATWordsFound.append(word)
+        index += 1
+    
+    phenomenalVerbs = ["feel", "feels", "thought"]
+    
+    ## “(VB) that ...”
+    for thatWord in THATWordsFound:
+        ## First, apply a grammar
+        grammar = r"""
+          NP: {<VB.|VB><IN>}
+        """
+        cp = nltk.RegexpParser(grammar)
+        result = cp.parse(GrabSentence(thatWord,taggedVersion=True,capitalize=False))
+        ## Then, extract the chunks found by the grammar
+        foundChunks = []
+        for eachResult in result:
+            if str(eachResult).count('/') > 0:
+                foundChunks.append(eachResult)
+        ## Check if the subject is a belief/attitude word
+        for eachChunk in foundChunks:
+            for eachWord in eachChunk:
+                if eachWord[1] == "VB":
+                    for eachPhenomenalVerb in phenomenalVerbs:
+                        if str.lower(eachWord[0]) == eachPhenomenalVerb:
+                            verb = [thatWord[0], thatWord[1], thatWord[2]]
+                            outputWordList.append(verb)
+    
+    functionOutput = []
+    for word in outputWordList:
+        functionOutput.append(GrabSentence(word))
+    functionOutput = '\n\n'.join(functionOutput)
+    return functionOutput
 
 
 #####################################

@@ -36,10 +36,18 @@ A,B Any way to detect: "and about midnight, not having yet seen the city, some o
 	Maybe ascribe belief and attitude descriptions to entities (through “is” verbs)?
 	If entity detection / chunking is done right, the program should recognize that (some of the company) (were) (confident), where “confident” is an ascription of a belief.
 
-A,D Didn’t detect: “…he had started to feel that the love of his father and…”
+X A,D Didn’t detect: “…he had started to feel that the love of his father and…”
 	Again, requires good verb deconstruction.
 	Should I detect “feel that…” as a special case? It seems to denote a cognitive quality that simply “feel…” doesn’t.
 	(feel that, sense that, discern that, notice that, aware that, conscious that, hold that, maintain that, get the impression that, have a hunch that)
+
+A,D False Positive: “How deaf and stupid have I been!” he THOUGHT, walking swiftly along.
+	To fix this, I am going to move “thought” to the category of verbs that only is triggered when it is accompanied with the word “that”. It might be used sometimes in intentional ways without the “that”, but it is more of a phenomenal word than one with cognitive content.
+
+X Didn’t catch: “No, this is over, I have awakened, I have indeed awakened and have not been born before this very day.” (The context is that he is remarking to himself that he has been blind to the truth of things, and he is here deciding to change his ways.)
+	This one is exceedingly tricky, and I don’t think I have any particular method for having the system detect this. The intention in this sentence is communicated implicitly instead of outright stated, and I don’t think there is any way to have a script catch this since all of the intention is hidden in the context, rather than explicitly stated.
+	Marking unable to fix.
+
 
 - - - -
 
