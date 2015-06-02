@@ -7,6 +7,7 @@ from nltk.chunk.regexp import *
 from nltk import Tree
 import re
 
+
 def DetectIntentions(originalText):
 
     ###################################################

@@ -44,11 +44,15 @@ print "\n"
 
 if selectedFunction == 1:
     ## 1: Print all intentional sentences
+    print "Do you want to print just the intentional sentences? y/n"
+    printJustIntent = raw_input()
     for eachParagraph in paragraphs:
-        print eachParagraph
+        if printJustIntent == "n": print eachParagraph
         if len(eachParagraph) > 0 and eachParagraph != "\n":
-            print "Intentional Sentences:"
-            print DetectIntentions(eachParagraph)
+            paraIntentions = DetectIntentions(eachParagraph)
+            if paraIntentions != "":
+                print "Intentional Sentences:"
+                print paraIntentions
 elif selectedFunction == 2:
     ## 2: Give the number of sentences in the entire document
     mySum = 0
