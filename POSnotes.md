@@ -2,9 +2,11 @@
 (Ordered by their structure)
 
 1. Verb indicates belief.
-1. Verb indicates desire.
-1. Belief/desire is subject of sentence.
-1. Belief/desire is direct object in "it is..." sentence.
+2. Verb indicates desire.
+3. Belief/desire is subject of sentence.
+4. Belief/desire is direct object in "it is..." sentence.
+
+- - - -
 
 ## Intention Detection Errors:
 
@@ -41,7 +43,6 @@ A,D False Positive: “How deaf and stupid have I been!” he THOUGHT, walking s
 X Didn’t catch: “No, this is over, I have awakened, I have indeed awakened and have not been born before this very day.” (The context is that he is remarking to himself that he has been blind to the truth of things, and he is here deciding to change his ways.)
 	This one is exceedingly tricky, and I don’t think I have any particular method for having the system detect this. The intention in this sentence is communicated implicitly instead of outright stated, and I don’t think there is any way to have a script catch this since all of the intention is hidden in the context, rather than explicitly stated.
 	Marking unable to fix.
-
 
 - - - -
 
