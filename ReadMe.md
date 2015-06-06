@@ -14,7 +14,9 @@ There are three types of sentences that are grouped under the category of intent
 2. descriptions of intent,
 3. and descriptions of future plans.
 
-It should be obvious that these are closely related, [though the exact way that they are is up for philosophical debate.](http://plato.stanford.edu/entries/intention/)
+This script aims at detecting sentences of the second type, [though the exact distinction between these three types is up for philosophical debate.](http://plato.stanford.edu/entries/intention/)
+
+
 
 ## What IntentionDetection.py looks for
 
