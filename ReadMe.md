@@ -48,4 +48,4 @@ Similar to the previous section, the program also checks all of the verbs in the
 
 ### Detecting non-verb Constructions
 
-Believe it or not, but most statements of intention will be caught by the above two simple rules.
+Believe it or not, most statements of intention will be caught by the above two simple rules.
