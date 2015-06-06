@@ -48,6 +48,8 @@ X Didn’t catch: “No, this is over, I have awakened, I have indeed awakened a
 	This one is exceedingly tricky, and I don’t think I have any particular method for having the system detect this. The intention in this sentence is communicated implicitly instead of outright stated, and I don’t think there is any way to have a script catch this since all of the intention is hidden in the context, rather than explicitly stated.
 	Marking unable to fix.
 
+A,B Doesn’t catch: “I am going to…”
+
 
 - - - -
 

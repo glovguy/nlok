@@ -51,13 +51,13 @@ def DetectIntentions(originalText):
         while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and (tokens[word[2]+startDisp][0] != "!" or tokens[word[2]+startDisp+1][0] != '"') and tokens[word[2]+startDisp][0] != "?":
             startDisp -= 1
             if word[2]+startDisp < 0: break
-        try:
-            if not (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
-                print "COMBINED EXCLAMATION AND QUOTE"
-                print tokens[word[2]+endDisp][0]
-                print tokens[word[2]+endDisp+1][0]
-        except:
-            print "end of string"
+            #try:
+                #if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
+                    #print "COMBINED EXCLAMATION AND QUOTE"
+                    #print tokens[word[2]+endDisp][0]
+                    #print tokens[word[2]+endDisp+1][0]
+            #except:
+                #print "end of string"
         startDisp += 1
         
         ## Find where the sentence ends
@@ -70,13 +70,13 @@ def DetectIntentions(originalText):
                 endDisp -= 1
                 break
         endDisp += 1
-        try:
-            if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
-                print "COMBINED EXCLAMATION AND QUOTE"
-                print tokens[word[2]+endDisp][0]
-                print tokens[word[2]+endDisp+1][0]
-        except:
-            print "end of string"
+        #try:
+            #if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
+                #print "COMBINED EXCLAMATION AND QUOTE"
+                #print tokens[word[2]+endDisp][0]
+                #print tokens[word[2]+endDisp+1][0]
+        #except:
+            #print "end of string"
         
         ## Smash the sentence together into a human-readable string or isolated tagged sentence
         sentence = []
@@ -155,7 +155,7 @@ def DetectIntentions(originalText):
                 isVerbsFound.append(eachVerb)
     
     beliefNonVerbs = ["belief", "beliefs", "knowledge", "perception", "perceptions", "memory", "memories", "suspicion", "suspicions", "assumption", "assumptions", "presupposition", "presuppositions", "suppositions", "supposition", "conclusion", "conclusions", "understanding", "judgment", "doubt", "doubts"]
-    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing"]
+    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing", "intention", "intentions"]
     
     ## “(PRP) (belief/attitude) is…”
     for isVerb in isVerbsFound:
