@@ -14,65 +14,94 @@ fileName = raw_input('File Name: ')
 if fileName == "": fileName = 'exampleText.txt'
 if fileName[-3:] != "txt":
     if fileName[len(str(fileName))-4] == ".": quit("unrecognized filetype")
-    print("No file extension, assuming it's a .txt file")
+    print "No file extension, assuming it's a .txt file"
     fileName = fileName + ".txt"
-print("Loading...")
+print "Loading..."
 try:
     text_file = open(fileName, "r")
 except:
     try:
-        print("Looking also in /TextExamples folder")
+        print "Looking also in /TextExamples folder"
         myCWD = os.getcwd()
         fileName = myCWD + "/TextExamples/" + fileName
-        print(fileName)
+        print fileName
         text_file = open(fileName, "r")
     except:
         quit("ERROR FINDING FILE")
 paragraphs = text_file.readlines()
-print("done \n")
+print "done \n"
 
-#######################
-## Ask user for task ##
-#######################
 
-print("And what would you like to do with this file?")
-print("1: Print all intentional sentences")
-print("2: Give the number of sentences in the entire document")
-print("3: Print report on density of intentional statements in text")
+#################################
+## Ask user for task and do it ##
+#################################
+
+print "And what would you like to do with this file?"
+print "1: Print all intentional sentences"
+print "2: Give the number of sentences in the entire document"
+print "3: Print report on density of intentional statements in text"
 selectedFunction = input()
-print("\n")
+print "\n"
+
 
 if selectedFunction == 1:
     ## 1: Print all intentional sentences
+    
+    ## First tokenize and tag the paragraphs
+    pos_tagged_paragraphs = []
     for eachParagraph in paragraphs:
-        print(eachParagraph)
         if len(eachParagraph) > 0 and eachParagraph != "\n":
-            print("Intentional Sentences:")
-            print(DetectIntentions(eachParagraph))
+            ## Tokenize
+            global tokens
+            tokens = nltk.word_tokenize(eachParagraph)
+            ## Tag the tokens
+            #global pos_tagged_tokens
+            #pos_tagged_paragraphs.append('this')
+            pos_tagged_paragraphs.append(nltk.pos_tag(tokens))
+            #print pos_tagged_paragraphs
+            #print "\n\n"
+        
+    print "Do you want to print just the intentional sentences? y/n"
+    printJustIntent = raw_input()
+    if printJustIntent == "no": printJustIntent = "n"
+    
+    for eachParagraph in pos_tagged_paragraphs:
+        if printJustIntent == "n": print eachParagraph
+        paragraphIntentions = DetectIntentions(pos_tagged_paragraphs)
+        if paragraphIntentions != "":
+            if printJustIntent == "n": print "Intentional Sentences:"
+            print paragraphIntentions
+                
+                
 elif selectedFunction == 2:
     ## 2: Give the number of sentences in the entire document
     mySum = 0
     for eachParagraph in paragraphs:
         mySum += countSentences(eachParagraph)
-    print("Number of sentences: " + str(mySum))
+    print "Number of sentences: " + str(mySum)
+    
+    
 elif selectedFunction == 3:
     ## 3: Print report on density of intentional statements in text
     density = []
     for eachParagraph in paragraphs:
-        print(eachParagraph)
+        print eachParagraph
         if len(eachParagraph) > 0 and eachParagraph != "\n":
             sentenceMarkers = countSentences(eachParagraph, returnMarkers=True)
             wordlist = DetectIntentions(eachParagraph)
-            print(sentenceMarkers)
-            print(wordlist)
+            print sentenceMarkers
+            print wordlist
             for eachSentence in range(len(sentenceMarkers)):
                 thisDensity = 0
                 for eachWord in wordlist:
                     if (eachWord[2] > sentenceMarkers[eachSentence-1] or eachSentence == 0) and eachWord[2] < sentenceMarkers[eachSentence]:
                         thisDensity += 1
                 density.append(thisDensity)
-    print(density)
+    print density
+    
+    
 else:
-    print("Invalid entry")
+    print "Invalid entry"
+
 
 text_file.close()

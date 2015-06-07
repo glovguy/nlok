@@ -7,23 +7,24 @@ from nltk.chunk.regexp import *
 from nltk import Tree
 import re
 
-def DetectIntentions(originalText):
+
+def DetectIntentions(originalTaggedText):
 
     ###################################################
     ## Grab all the words and compute out POS tokens ##
     ###################################################
     
-    #returnSentence = []
+    ## All of this stuff got moved into main.py because it makes more sense to put it there
     
     ## Tokenize
-    global tokens
-    tokens = nltk.word_tokenize(originalText)
+    #global tokens
+    #tokens = nltk.word_tokenize(originalText)
     #print "TOKENS"
     #print tokens
     
     ## Tag the tokens
-    global pos_tagged_tokens
-    pos_tagged_tokens = nltk.pos_tag(tokens)
+    #global pos_tagged_tokens
+    #pos_tagged_tokens = nltk.pos_tag(tokens)
     #print "TAGGED PARAGRAPH"
     #print pos_tagged_tokens
     
@@ -48,44 +49,48 @@ def DetectIntentions(originalText):
         
         ## Find where the sentence starts
         startDisp = 0
-        while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and (tokens[word[2]+startDisp][0] != "!" or tokens[word[2]+startDisp+1][0] != '"') and tokens[word[2]+startDisp][0] != "?":
+        print "\n\n\n"
+        print word
+        print originalTaggedText[word[2]+startDisp][0][0]
+        print "\n\n\n"
+        while originalTaggedText[word[2]+startDisp][0][0] != "." and originalTaggedText[word[2]+startDisp][0][0] != ";" and (originalTaggedText[word[2]+startDisp][0][0] != "!" or originalTaggedText[word[2]+startDisp+1][0][0] != '"') and originalTaggedText[word[2]+startDisp][0][0] != "?":
             startDisp -= 1
             if word[2]+startDisp < 0: break
-            #try:
-                #if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
-                    #print "COMBINED EXCLAMATION AND QUOTE"
-                    #print tokens[word[2]+endDisp][0]
-                    #print tokens[word[2]+endDisp+1][0]
-            #except:
-                #print "end of string"
+        try:
+            if not (originalTaggedText[word[2]+endDisp][0][0] == "!" and originalTaggedText[word[2]+endDisp+1][0][0] != '"'):
+                print "COMBINED EXCLAMATION AND QUOTE"
+                print originalTaggedText[word[2]+endDisp][1][0]
+                print originalTaggedText[word[2]+endDisp+1][1][0]
+        except:
+            print "end of string"
         startDisp += 1
         
         ## Find where the sentence ends
         endDisp = 0
-        while tokens[word[2]+endDisp][0] != "." and tokens[word[2]+endDisp][0] != ";" and (tokens[word[2]+endDisp][0] != "!" or tokens[word[2]+endDisp+1][0] != '"') and tokens[word[2]+endDisp][0] != "?":
+        while originalTaggedText[word[2]+endDisp][0][0] != "." and originalTaggedText[word[2]+endDisp][0][0] != ";" and (originalTaggedText[word[2]+endDisp][0][0] != "!" or originalTaggedText[word[2]+endDisp+1][0][0] != '"') and originalTaggedText[word[2]+endDisp][0][0] != "?":
             endDisp += 1
             try:
-                tokens[word[2]+endDisp][0] != "."
+                originalTaggedText[word[2]+endDisp][0][0] != "."
             except:
                 endDisp -= 1
                 break
         endDisp += 1
-        #try:
-            #if (tokens[word[2]+endDisp][0] == "!" and tokens[word[2]+endDisp+1][0] != '"'):
-                #print "COMBINED EXCLAMATION AND QUOTE"
-                #print tokens[word[2]+endDisp][0]
-                #print tokens[word[2]+endDisp+1][0]
-        #except:
-            #print "end of string"
+        try:
+            if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
+                print "COMBINED EXCLAMATION AND QUOTE"
+                print originalTaggedText[word[2]+endDisp][0][0]
+                print originalTaggedText[word[2]+endDisp+1][0][0]
+        except:
+            print "end of string"
         
         ## Smash the sentence together into a human-readable string or isolated tagged sentence
         sentence = []
         if taggedVersion == False:
             for i in range(endDisp - startDisp):
                 if startDisp == -i and capitalize == True:
-                    sentence.append(str.upper(str(tokens[word[2]+startDisp+i])))  # Capitalize the word passed to the function
+                    sentence.append(str.upper(str(originalTaggedText[word[2]+startDisp+i][0])))  # Capitalize the word passed to the function
                 else:
-                    sentence.append(tokens[word[2]+startDisp+i])
+                    sentence.append(originalTaggedText[word[2]+startDisp+i][0])
             sentence = ' '.join(sentence)
             ## The above process adds unnecessary spaces before punctuation.
             ## Let's remove those.
@@ -104,10 +109,10 @@ def DetectIntentions(originalText):
             for i in range(endDisp - startDisp):
                 if startDisp == -i and capitalize == True:
                     # Capitalize the word passed to the function
-                    appendThis = [str.upper(pos_tagged_tokens[word[2]+startDisp+i][0]), pos_tagged_tokens[word[2]+startDisp+i][1]]
+                    appendThis = [str.upper(originalTaggedText[word[2]+startDisp+i][0]), originalTaggedText[word[2]+startDisp+i][1]]
                     sentence.append(appendThis)
                 else:
-                    sentence.append(pos_tagged_tokens[word[2]+startDisp+i])
+                    sentence.append(originalTaggedText[word[2]+startDisp+i])
         
         return sentence
     
@@ -120,7 +125,7 @@ def DetectIntentions(originalText):
     ## Grab all verbs and put them in a list
     spot = 0
     verbList = []
-    for tag in pos_tagged_tokens:
+    for tag in originalTaggedText:
         if tag[1][0] == "V":
             verb =  [tag[0], tag[1], spot]
             verbList.append(verb)
@@ -155,7 +160,7 @@ def DetectIntentions(originalText):
                 isVerbsFound.append(eachVerb)
     
     beliefNonVerbs = ["belief", "beliefs", "knowledge", "perception", "perceptions", "memory", "memories", "suspicion", "suspicions", "assumption", "assumptions", "presupposition", "presuppositions", "suppositions", "supposition", "conclusion", "conclusions", "understanding", "judgment", "doubt", "doubts"]
-    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing", "intention", "intentions"]
+    attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing"]
     
     ## “(PRP) (belief/attitude) is…”
     for isVerb in isVerbsFound:
@@ -186,9 +191,9 @@ def DetectIntentions(originalText):
     ## Find 'that' conjunctions
     index = 0
     THATWordsFound = []
-    for eachTaggedWord in pos_tagged_tokens:
-        if str.lower(eachTaggedWord[0]) == "that":
-            word = [eachTaggedWord[0], eachTaggedWord[1], index]
+    for eachTaggedWord in originalTaggedText:
+        if str.lower(eachTaggedWord[0][0]) == "that":
+            word = [eachTaggedWord[0][0], eachTaggedWord[0][1], index]
             THATWordsFound.append(word)
         index += 1
     
