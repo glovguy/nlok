@@ -49,10 +49,10 @@ def DetectIntentions(originalTaggedText):
         
         ## Find where the sentence starts
         startDisp = 0
-        print "\n\n\n"
+        '''print "\n\n\n"
         print word
         print originalTaggedText[word[2]+startDisp][0][0]
-        print "\n\n\n"
+        print "\n\n\n"'''
         while originalTaggedText[word[2]+startDisp][0][0] != "." and originalTaggedText[word[2]+startDisp][0][0] != ";" and (originalTaggedText[word[2]+startDisp][0][0] != "!" or originalTaggedText[word[2]+startDisp+1][0][0] != '"') and originalTaggedText[word[2]+startDisp][0][0] != "?":
             startDisp -= 1
             if word[2]+startDisp < 0: break
@@ -62,8 +62,7 @@ def DetectIntentions(originalTaggedText):
                 print originalTaggedText[word[2]+endDisp][1][0]
                 print originalTaggedText[word[2]+endDisp+1][1][0]
         except:
-            print "end of string"
-        startDisp += 1
+            startDisp += 1
         
         ## Find where the sentence ends
         endDisp = 0
@@ -75,13 +74,13 @@ def DetectIntentions(originalTaggedText):
                 endDisp -= 1
                 break
         endDisp += 1
-        try:
+        try: ## Remove these
             if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
                 print "COMBINED EXCLAMATION AND QUOTE"
                 print originalTaggedText[word[2]+endDisp][0][0]
                 print originalTaggedText[word[2]+endDisp+1][0][0]
         except:
-            print "end of string"
+            "don't fix what ain't broke I guess"
         
         ## Smash the sentence together into a human-readable string or isolated tagged sentence
         sentence = []
@@ -92,8 +91,8 @@ def DetectIntentions(originalTaggedText):
                 else:
                     sentence.append(originalTaggedText[word[2]+startDisp+i][0])
             sentence = ' '.join(sentence)
-            ## The above process adds unnecessary spaces before punctuation.
-            ## Let's remove those.
+            ## The above process adds unnecessary spaces before punctuation,
+            ## which we remove below.
             sentence = sentence.replace(" .", ".")
             sentence = sentence.replace(" ,", ",")
             sentence = sentence.replace(" !", "!")
@@ -105,6 +104,8 @@ def DetectIntentions(originalTaggedText):
             sentence = sentence.replace(" 've", "'ve")
             sentence = sentence.replace(" n't", "n't")
             sentence = sentence.replace(" '", "'")
+            sentence = sentence.replace("''", '"')
+            sentence = sentence.replace("`` ", '"')
         elif taggedVersion == True:
             for i in range(endDisp - startDisp):
                 if startDisp == -i and capitalize == True:
@@ -126,6 +127,10 @@ def DetectIntentions(originalTaggedText):
     spot = 0
     verbList = []
     for tag in originalTaggedText:
+        print "originalTaggedText"
+        print originalTaggedText
+        print "tag:"
+        print tag
         if tag[1][0] == "V":
             verb =  [tag[0], tag[1], spot]
             verbList.append(verb)
@@ -146,6 +151,7 @@ def DetectIntentions(originalTaggedText):
         for testVerb in attitudeVerbs:
             if str.lower(verb[0]) == testVerb:
                 outputWordList.append(verb)
+                
     
     #######################################
     ## Detect non-verb beliefs/attitudes ##
@@ -192,8 +198,8 @@ def DetectIntentions(originalTaggedText):
     index = 0
     THATWordsFound = []
     for eachTaggedWord in originalTaggedText:
-        if str.lower(eachTaggedWord[0][0]) == "that":
-            word = [eachTaggedWord[0][0], eachTaggedWord[0][1], index]
+        if str.lower(eachTaggedWord[0]) == "that":
+            word = [eachTaggedWord[0], eachTaggedWord[1], index]
             THATWordsFound.append(word)
         index += 1
     
@@ -222,9 +228,14 @@ def DetectIntentions(originalTaggedText):
                             outputWordList.append(verb)
     
     functionOutput = []
+    
+    '''print "\n\n"
+    print outputWordList
+    print "\n\n"'''
+    
     for word in outputWordList:
         functionOutput.append(GrabSentence(word))
-    functionOutput = '\n\n'.join(functionOutput)
+    functionOutput = '\n'.join(functionOutput)
     return functionOutput
 
 
