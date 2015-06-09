@@ -45,7 +45,6 @@ print "3: Print report on density of intentional statements in text"
 print "0: Unit tests"
 selectedFunction = input()
 
-
 def tagAndTokenize():
     pos_tagged_paragraphs = []
     for eachParagraph in paragraphs:
@@ -76,6 +75,19 @@ if selectedFunction == 1:
     print "\n"
                 
                 
+=======
+if selectedFunction == 1:
+    ## 1: Print all intentional sentences
+    print "Do you want to print just the intentional sentences? y/n"
+    printJustIntent = raw_input()
+    for eachParagraph in paragraphs:
+        if printJustIntent == "n": print eachParagraph
+        if len(eachParagraph) > 0 and eachParagraph != "\n":
+            paraIntentions = DetectIntentions(eachParagraph)
+            if paraIntentions != "":
+                print "Intentional Sentences:"
+                print paraIntentions
+>>>>>>> 46dcc56295c534970b41fd83f5b0384222c8da88
 elif selectedFunction == 2:
     ## 2: Give the number of sentences in the entire document
     print "\n\n"

@@ -9,7 +9,7 @@ import re
 
 
 def DetectIntentions(originalTaggedText):
-
+    
     ###################################################
     ## Grab all the words and compute out POS tokens ##
     ###################################################

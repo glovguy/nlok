@@ -1,18 +1,14 @@
-Goals:
-	- Should work at least 90% of the time overall
-	- Very low false positive rate expected, no higher than 5%
-	- Not expected to work if the nltk POS tagging fails
+## Types of Intentional Sentences
+(Ordered by their structure)
+
+1. Verb indicates belief.
+2. Verb indicates desire.
+3. Belief/desire is subject of sentence.
+4. Belief/desire is direct object in "it is..." sentence.
 
 - - - -
 
-Tasks for script:
-	- Print all intentional sentences
-	- Count the number of sentences
-	- Return the density of intentional statements in sentences
-
-- - - -
-
-Intention Detection Errors:
+## Intention Detection Errors:
 
 A,B Didn’t detect: “I have come to tell you that it is my longing to…”
 
