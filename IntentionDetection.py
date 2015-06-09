@@ -127,10 +127,6 @@ def DetectIntentions(originalTaggedText):
     spot = 0
     verbList = []
     for tag in originalTaggedText:
-        print "originalTaggedText"
-        print originalTaggedText
-        print "tag:"
-        print tag
         if tag[1][0] == "V":
             verb =  [tag[0], tag[1], spot]
             verbList.append(verb)
@@ -229,10 +225,6 @@ def DetectIntentions(originalTaggedText):
     
     functionOutput = []
     
-    '''print "\n\n"
-    print outputWordList
-    print "\n\n"'''
-    
     for word in outputWordList:
         functionOutput.append(GrabSentence(word))
     functionOutput = '\n'.join(functionOutput)
@@ -243,11 +235,11 @@ def DetectIntentions(originalTaggedText):
 ## Returns the number of sentences ##
 #####################################
 
-def countSentences(text, returnMarkers = False):
-    if text == "\n": return 0
+def countSentences(tokens, returnMarkers = False):
+    #if text == "\n": return 0
     
     ## Tokenize
-    tokens = nltk.word_tokenize(text)
+    #tokens = nltk.word_tokenize(text)
     
     ## Find where sentences start
     markers = []

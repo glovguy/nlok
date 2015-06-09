@@ -93,18 +93,24 @@ elif selectedFunction == 3:
     
     density = []
     for eachParagraph in pos_tagged_paragraphs:
+        print "eachParagraph"
         print eachParagraph
+        print "\n"
         #if len(eachParagraph) > 0 and eachParagraph != "\n":
         sentenceMarkers = countSentences(eachParagraph, returnMarkers=True)
         wordlist = DetectIntentions(eachParagraph)
+        print "sentenceMarkers:"
         print sentenceMarkers
+        print "wordlist:"
         print wordlist
+        print "\n"
         for eachSentence in range(len(sentenceMarkers)):
             thisDensity = 0
             for eachWord in wordlist:
                 if (eachWord[2] > sentenceMarkers[eachSentence-1] or eachSentence == 0) and eachWord[2] < sentenceMarkers[eachSentence]:
                     thisDensity += 1
             density.append(thisDensity)
+    print "density"
     print density
     
     
