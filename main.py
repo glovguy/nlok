@@ -75,7 +75,6 @@ if selectedFunction == 1:
     print "\n"
                 
                 
-=======
 if selectedFunction == 1:
     ## 1: Print all intentional sentences
     print "Do you want to print just the intentional sentences? y/n"
@@ -87,7 +86,8 @@ if selectedFunction == 1:
             if paraIntentions != "":
                 print "Intentional Sentences:"
                 print paraIntentions
->>>>>>> 46dcc56295c534970b41fd83f5b0384222c8da88
+    
+    
 elif selectedFunction == 2:
     ## 2: Give the number of sentences in the entire document
     print "\n\n"
