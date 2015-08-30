@@ -1,6 +1,6 @@
 
 *.komodoproject
+*.pyc
+codeGraveyard.*
+TextExamples
 
-IntentionDetection.pyc
-
-PrintingFunctions.pyc
