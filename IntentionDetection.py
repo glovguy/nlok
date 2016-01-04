@@ -1,3 +1,4 @@
+import json
 import nltk
 # -*- coding: utf-8 -*-
 
@@ -9,13 +10,10 @@ import re
 
 
 def DetectIntentions(originalTaggedText):
-    
     ############################################################
     ## Returns a sentence when given a word with its location ##
     ############################################################
-    
-    def GrabSentence(word, capitalize = True, taggedVersion = False):
-        
+    def GrabSentence(word, capitalize=True, taggedVersion=False):
         ## Find where the sentence starts
         startDisp = 0
         '''print "\n\n\n"
@@ -32,7 +30,6 @@ def DetectIntentions(originalTaggedText):
                 print originalTaggedText[word[2]+endDisp+1][1][0]
         except:
             startDisp += 1
-        
         ## Find where the sentence ends
         endDisp = 0
         while originalTaggedText[word[2]+endDisp][0][0] != "." and originalTaggedText[word[2]+endDisp][0][0] != ";" and (originalTaggedText[word[2]+endDisp][0][0] != "!" or originalTaggedText[word[2]+endDisp+1][0][0] != '"') and originalTaggedText[word[2]+endDisp][0][0] != "?":
@@ -43,19 +40,18 @@ def DetectIntentions(originalTaggedText):
                 endDisp -= 1
                 break
         endDisp += 1
-        try: ## Remove these
+        try:  # I want to remove these
             if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
                 print "COMBINED EXCLAMATION AND QUOTE"
                 print originalTaggedText[word[2]+endDisp][0][0]
                 print originalTaggedText[word[2]+endDisp+1][0][0]
         except:
             "don't fix what ain't broke I guess"
-        
         ## Smash the sentence together into a human-readable string or isolated tagged sentence
         sentence = []
-        if taggedVersion == False:
+        if taggedVersion is False:
             for i in range(endDisp - startDisp):
-                if startDisp == -i and capitalize == True:
+                if startDisp == -i and capitalize is True:
                     sentence.append(str.upper(str(originalTaggedText[word[2]+startDisp+i][0])))  # Capitalize the word passed to the function
                 else:
                     sentence.append(originalTaggedText[word[2]+startDisp+i][0])
@@ -75,32 +71,27 @@ def DetectIntentions(originalTaggedText):
             sentence = sentence.replace(" '", "'")
             sentence = sentence.replace("''", '"')
             sentence = sentence.replace("`` ", '"')
-        elif taggedVersion == True:
+        elif taggedVersion is True:
             for i in range(endDisp - startDisp):
-                if startDisp == -i and capitalize == True:
+                if startDisp == -i and capitalize is True:
                     # Capitalize the word passed to the function
                     appendThis = [str.upper(originalTaggedText[word[2]+startDisp+i][0]), originalTaggedText[word[2]+startDisp+i][1]]
                     sentence.append(appendThis)
                 else:
                     sentence.append(originalTaggedText[word[2]+startDisp+i])
-        
         return sentence
-    
     ###################################
     ## Detect verb beliefs/attitudes ##
     ###################################
-    
-    outputWordList = [] ## This will contain all of the words we find that signal a belief/attitude is present
-    
+    outputWordList = []  # This will contain all of the words we find that signal a belief/attitude is present
     ## Grab all verbs and put them in a list
     spot = 0
     verbList = []
     for tag in originalTaggedText:
         if tag[1][0] == "V":
-            verb =  [tag[0], tag[1], spot]
+            verb = [tag[0], tag[1], spot]
             verbList.append(verb)
         spot += 1
-        
     ## Find any belief verbs
     beliefVerbs = ["believe", "believes", "believed", "believing", "know", "knows", "knew", "knowing", "perceive", "perceives", "perceive", "perceiving", "notice", "notices", "noticed", "noticing", "remember", "remembers", "remembered", "remembering", "imagine", "imagines", "imagined", "imagining", "suspect", "suspects", "suppose", "suspecting", "assume", "presume", "surmise", "conclude", "deduce", "understand", "understands", "understood", "understanding", "judge", "doubt", "thought"]
     verb = []
@@ -108,7 +99,6 @@ def DetectIntentions(originalTaggedText):
         for testVerb in beliefVerbs:
             if str.lower(verb[0]) == testVerb:
                 outputWordList.append(verb)
-    
     ## Find any attitude verbs
     attitudeVerbs = ["want", "wanted", "wants", "wish", "wishes", "wished", "consider", "considers", "considered", "desire", "desires", "desired", "hope", "hoped", "hopes", "aspire", "aspired", "aspires", "fancy", "fancied", "fancies", "care", "cares", "cared", "like", "likes", "liked"]
     verb = []
@@ -116,12 +106,9 @@ def DetectIntentions(originalTaggedText):
         for testVerb in attitudeVerbs:
             if str.lower(verb[0]) == testVerb:
                 outputWordList.append(verb)
-                
-    
     #######################################
     ## Detect non-verb beliefs/attitudes ##
     #######################################
-    
     ## Find 'is' verbs
     isWords = ["is", "was", "were", "are"]
     isVerbsFound = []
@@ -129,10 +116,8 @@ def DetectIntentions(originalTaggedText):
         for testVerb in isWords:
             if str.lower(eachVerb[0]) == testVerb:
                 isVerbsFound.append(eachVerb)
-    
     beliefNonVerbs = ["belief", "beliefs", "knowledge", "perception", "perceptions", "memory", "memories", "suspicion", "suspicions", "assumption", "assumptions", "presupposition", "presuppositions", "suppositions", "supposition", "conclusion", "conclusions", "understanding", "judgment", "doubt", "doubts"]
     attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing"]
-    
     ## “(PRP) (belief/attitude) is…”
     for isVerb in isVerbsFound:
         ## First, apply a grammar
@@ -140,7 +125,7 @@ def DetectIntentions(originalTaggedText):
           NP: {<DT|PRP\$|NNP>?<JJ>*<NN><VB.|VB>}
         """
         cp = nltk.RegexpParser(grammar)
-        result = cp.parse(GrabSentence(isVerb,taggedVersion=True,capitalize=False))
+        result = cp.parse(GrabSentence(isVerb, taggedVersion=True, capitalize=False))
         ## Then, extract the chunks found by the grammar
         foundChunks = []
         for eachResult in result:
@@ -158,7 +143,6 @@ def DetectIntentions(originalTaggedText):
                         if str.lower(eachWord[0]) == eachAttitudeNonverb:
                             verb = [isVerb[0], isVerb[1], isVerb[2]]
                             outputWordList.append(verb)
-    
     ## Find 'that' conjunctions
     index = 0
     THATWordsFound = []
@@ -167,9 +151,7 @@ def DetectIntentions(originalTaggedText):
             word = [eachTaggedWord[0], eachTaggedWord[1], index]
             THATWordsFound.append(word)
         index += 1
-    
     phenomenalVerbs = ["feel", "feels", "thought"]
-    
     ## “(VB) that ...”
     for thatWord in THATWordsFound:
         ## First, apply a grammar
@@ -177,7 +159,7 @@ def DetectIntentions(originalTaggedText):
           NP: {<VB.|VB><IN>}
         """
         cp = nltk.RegexpParser(grammar)
-        result = cp.parse(GrabSentence(thatWord,taggedVersion=True,capitalize=False))
+        result = cp.parse(GrabSentence(thatWord, taggedVersion=True, capitalize=False))
         ## Then, extract the chunks found by the grammar
         foundChunks = []
         for eachResult in result:
@@ -191,9 +173,7 @@ def DetectIntentions(originalTaggedText):
                         if str.lower(eachWord[0]) == eachPhenomenalVerb:
                             verb = [thatWord[0], thatWord[1], thatWord[2]]
                             outputWordList.append(verb)
-    
     functionOutput = []
-    
     for word in outputWordList:
         functionOutput.append(GrabSentence(word))
     functionOutput = '\n'.join(functionOutput)
@@ -204,12 +184,10 @@ def DetectIntentions(originalTaggedText):
 ## Returns the number of sentences ##
 #####################################
 
-def countSentences(tokens, returnMarkers = False):
+def countSentences(tokens, returnMarkers=False):
     #if text == "\n": return 0
-    
     ## Tokenize
     #tokens = nltk.word_tokenize(text)
-    
     ## Find where sentences start
     markers = []
     findDisp = 0
@@ -217,26 +195,23 @@ def countSentences(tokens, returnMarkers = False):
         if eachToken == "." or eachToken == ";" or eachToken == "!" or eachToken == "?":
             markers.append(findDisp)
         findDisp += 1
-    
     if markers == []:
         markers.append(len(tokens))
     elif markers[len(markers)-1] != len(tokens)-1:
         markers.append(len(tokens))
-    
-    if returnMarkers == False: return len(markers)
-    else: return markers
+    if returnMarkers is False:
+        return len(markers)
+    else:
+        return markers
 
 
 if __name__ == "__main__":
     ##  If loaded alone, will run the below interface
     ##  If loaded in shell program, will load without executing anything
-    
     ################################
     ## Load text provided by user ##
     ################################
-    
     import os
-    
     fileName = raw_input('File Name: ')
     if fileName == "":
         print "no filename given, using exampleText.txt as default"
@@ -259,19 +234,15 @@ if __name__ == "__main__":
             quit("ERROR FINDING FILE")
     paragraphs = text_file.readlines()
     print "done \n"
-    
-    
     #################################
     ## Ask user for task and do it ##
     #################################
-    
     print "And what would you like to do with this file?"
     print "1: Print all intentional sentences"
     print "2: Give the number of sentences in the entire document"
     print "3: Print report on density of intentional statements in text"
     print "0: Unit tests"
     selectedFunction = input()
-    
     def tagAndTokenize():
         pos_tagged_paragraphs = []
         for eachParagraph in paragraphs:
@@ -281,18 +252,14 @@ if __name__ == "__main__":
                 pos_tagged_paragraphs.append(nltk.pos_tag(tokens))
         print "\n\n"
         return pos_tagged_paragraphs
-    
-    
     if selectedFunction == 1:
         ## 1: Print all intentional sentences
         ## Need more info
         print "Do you want to print just the intentional sentences? y/n"
         printJustIntent = raw_input()
         if printJustIntent == "no": printJustIntent = "n"
-        
         ## First tokenize and tag the paragraphs
         pos_tagged_paragraphs = tagAndTokenize()
-        
         for eachParagraph in pos_tagged_paragraphs:
             if printJustIntent == "n": print eachParagraph
             paragraphIntentions = DetectIntentions(eachParagraph)
@@ -311,8 +278,6 @@ if __name__ == "__main__":
                 if paraIntentions != "":
                     print "Intentional Sentences:"
                     print paraIntentions'''
-        
-        
     elif selectedFunction == 2:
         ## 2: Give the number of sentences in the entire document
         print "\n\n"
@@ -320,14 +285,10 @@ if __name__ == "__main__":
         for eachParagraph in paragraphs:
             mySum += countSentences(eachParagraph)
         print "Number of sentences: " + str(mySum)
-        
-        
     elif selectedFunction == 3:
         ## 3: Print report on density of intentional statements in text
-        
         ## First tokenize and tag the paragraphs
         pos_tagged_paragraphs = tagAndTokenize()
-        
         density = []
         for eachParagraph in pos_tagged_paragraphs:
             print "eachParagraph"
@@ -349,8 +310,7 @@ if __name__ == "__main__":
                 density.append(thisDensity)
         print "density"
         print density
-        
-        
+
     elif selectedFunction == 0:
         ## Perform unit tests
         print "\n\n"
@@ -375,10 +335,8 @@ if __name__ == "__main__":
                             thisDensity += 1
                     density.append(thisDensity)
         print density
-        
-        
+        myfile = open('outputDensity.intention', 'r+')
+        json.dump(density, myfile)
     else:
         print "Invalid entry"
-    
-    
     text_file.close()
