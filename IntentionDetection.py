@@ -118,7 +118,7 @@ def DetectIntentions(originalTaggedText):
                 isVerbsFound.append(eachVerb)
     beliefNonVerbs = ["belief", "beliefs", "knowledge", "perception", "perceptions", "memory", "memories", "suspicion", "suspicions", "assumption", "assumptions", "presupposition", "presuppositions", "suppositions", "supposition", "conclusion", "conclusions", "understanding", "judgment", "doubt", "doubts"]
     attitudeNonVerbs = ["desire", "desires", "wants", "want", "wish", "wishes", "hope", "hopes", "aspirations", "aspiration", "fancy", "fancies", "care", "cares", "longing"]
-    ## “(PRP) (belief/attitude) is…”
+    ## "(PRP) (belief/attitude) is..."
     for isVerb in isVerbsFound:
         ## First, apply a grammar
         grammar = r"""
@@ -152,7 +152,7 @@ def DetectIntentions(originalTaggedText):
             THATWordsFound.append(word)
         index += 1
     phenomenalVerbs = ["feel", "feels", "thought"]
-    ## “(VB) that ...”
+    ## "(VB) that ..."
     for thatWord in THATWordsFound:
         ## First, apply a grammar
         grammar = r"""
@@ -242,7 +242,7 @@ if __name__ == "__main__":
     print "2: Give the number of sentences in the entire document"
     print "3: Print report on density of intentional statements in text"
     print "0: Unit tests"
-    selectedFunction = input()
+    selectedFunction = input("\n: ")
     def tagAndTokenize():
         pos_tagged_paragraphs = []
         for eachParagraph in paragraphs:
@@ -310,6 +310,8 @@ if __name__ == "__main__":
                 density.append(thisDensity)
         print "density"
         print density
+        myfile = open('outputDensity.intention', 'r+')
+        json.dump(density, myfile)
 
     elif selectedFunction == 0:
         ## Perform unit tests
