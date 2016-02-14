@@ -16,13 +16,11 @@ def PrintSentence(word, capitalize = True, taggedVersion = False):
     while tokens[word[2]+startDisp][0] != "." and tokens[word[2]+startDisp][0] != ";" and tokens[word[2]+startDisp][0] != "!" and tokens[word[2]+startDisp][0] != "?":
         startDisp = startDisp - 1
     startDisp = startDisp + 1
-    
     ## Find where the sentence ends
     endDisp = 0
     while tokens[word[2]+endDisp][0] != "." and tokens[word[2]+endDisp][0] != ";" and tokens[word[2]+endDisp][0] != "!" and tokens[word[2]+endDisp][0] != "?":
         endDisp = endDisp + 1
     endDisp = endDisp + 1
-    
     ## Smash the sentence together into a human-readable string or isolated tagged sentence
     sentence = []
     if taggedVersion == False:
@@ -52,5 +50,4 @@ def PrintSentence(word, capitalize = True, taggedVersion = False):
                 sentence.append(appendThis)
             else:
                 sentence.append(pos_tagged_tokens[word[2]+startDisp+i])
-    
     return sentence
