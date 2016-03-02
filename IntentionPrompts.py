@@ -1,9 +1,9 @@
 import json
 import nltk
-import IntentionDetection
+from IntentionDetection import *
 
 
-def save_and_quit(my_output):
+def save_and_quit(my_output, fileName):
     outputFileName = raw_input('what would you like to call the new filename?\n: ')
     if outputFileName == '':
         print "assuming it is the same as input, but with '.intention' appended"
@@ -54,7 +54,7 @@ def determine_file_type(fileName):
         if fileName[len(str(fileName))-4] == ".":
             quit("unrecognized filetype")
         print "No file extension, assuming it's a .txt file"
-        fileName = fileName + ".txt"
+        file_type = txt
     return file_type
 
 
@@ -85,7 +85,7 @@ def prompt_setences_and_ask_intention(raw_text):
             elif int(userInput) == 0:
                 resp = raw_input('save and quit? y/n\n: ')
                 if resp == "y":
-                    save_and_quit(my_output)
+                    return my_output
             elif int(userInput) == 0:
                 print "undefined"
             elif int(userInput) > 0 and int(userInput) <= tally and not int(userInput) in selectedSentences:
@@ -131,10 +131,11 @@ if __name__ == "__main__":
             report_density_of_intentional_sentences(raw_text)
         elif file_type == "txt" and selectedFunction == 4:
             ## 4: User inputs to determine which sentences are intentional
-            prompt_setences_and_ask_intention(raw_text)
+            my_output = prompt_setences_and_ask_intention(raw_text)
+            save_and_quit(my_output, fileName)
         elif selectedFunction == 0:
             ## 0: Perform unit tests
-            unit_tests(raw_text)
+            unittest.main()
         else:
             print "Invalid entry"
     elif file_type == "intention":
