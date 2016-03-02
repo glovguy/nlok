@@ -296,18 +296,18 @@ def report_density_of_intentional_sentences(raw_text):
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
     def test_determine_file_type(self):
+        from IntentionPrompts import determine_file_type
         self.assertEqual(determine_file_type("jldsnfkjds.intention"), 'intention')
         self.assertEqual(determine_file_type("intent.n.intention"), 'intention')
-        self.assertEqual(determine_file_type(""), 'exampleText.txt')
-        self.assertEqual(determine_file_type("hl2.exe"), 'exampleText.txt')
+        self.assertEqual(determine_file_type("exampleText.txt"), "txt")
 
 
 class test_detection_functions(unittest.TestCase):
     def test_each_function_returns_correct_file_type(self):
-        testText = "ljkndf gnkjfdg fdgdflkngdfgfdlkgf.gd dlkgdfg[fdg\
+        testText = """ljkndf gnkjfdg fdgdflkngdfgfdlkgf.gd dlkgdfg[fdg\
         klfdg fglk.g,fd/,gdfgpojdfg lmdfg ,./dfg,/ dsf';dsff;'f\
         Hotdogs\
-        "
+        """
         returnedValue1 = detect_verb_beliefs_and_attitudes(testText)
         returnedValue2 = detect_nonverb_beliefs_and_attitudes(testText)
         self.assertEqual(type(returnedValue1), type(['', 1]))

@@ -43,18 +43,15 @@ def load_file(fileName, file_type):
 
 
 def determine_file_type(fileName):
-    if fileName == "":
-        print "no filename given, using exampleText.txt as default"
-        fileName = 'exampleText.txt'
     if fileName[-10:] == ".intention":
         file_type = "intention"
-    elif fileName[-3:] == ".txt":
+    elif fileName[-4:] == ".txt":
         file_type = "txt"
     else:
         if fileName[len(str(fileName))-4] == ".":
             quit("unrecognized filetype")
         print "No file extension, assuming it's a .txt file"
-        file_type = txt
+        file_type = 'txt'
     return file_type
 
 
@@ -110,9 +107,11 @@ if __name__ == "__main__":
     if fileName == "":
         print "no filename given, using exampleText.txt as default"
         fileName = 'exampleText.txt'
-    file_type = determine_file_type(fileName)
+        file_type = 'txt'
+    else:
+        file_type = determine_file_type(fileName)
     raw_text = load_file(fileName, file_type)
-    if file_type == txt:
+    if file_type == 'txt':
         print "And what would you like to do with this file?"
         print "1: Print all intentional sentences"
         print "2: Give the number of sentences in the entire document"
