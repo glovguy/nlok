@@ -75,7 +75,10 @@ def prompt_setences_and_ask_intention(raw_text):
                 else:
                     print "    " + str(tally) + ":  " + eachSentence
                 tally += 1
-            userInput = raw_input('\n\nAny intentional sentences?\n Enter line number\n 0 to save and quit\n or hit return to move on:')
+            userInput = raw_input('''\n\nAny intentional sentences?
+             Enter line number
+             0 to save and quit
+              or hit return to move on:''')
             if userInput == '':
                 print "okay, none\n\n---\n"
                 break
