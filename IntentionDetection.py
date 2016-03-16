@@ -1,100 +1,87 @@
 import json
 import nltk
+from language import Sentence, Word, Tag
 # -*- coding: utf-8 -*-
-from nltk.chunk import *
+# from nltk.chunk import *
 
 
-class word(object):
-    def __init__(self, text, POStag=null, spotInSentence=null):
-        self.text = text
-        self.POStag = POStag
-        self.spotInSentence = spotInSentence
-
-
-class Sentence(object):
-    def __init__(self, text, words=null):
-        self.text = text
-        self.words = words
-        self.partsOfSpeech = null
-
-
-def GrabSentence(word, capitalize=True, taggedVersion=False):
-        ## Find where the sentence starts
-        startDisp = 0
-        '''print "\n\n\n"
-        print word
-        print originalTaggedText[word[2]+startDisp][0][0]
-        print "\n\n\n"'''
-        while originalTaggedText[word[2]+startDisp][0][0] != "." and originalTaggedText[word[2]+startDisp][0][0] != ";" and (originalTaggedText[word[2]+startDisp][0][0] != "!" or originalTaggedText[word[2]+startDisp+1][0][0] != '"') and originalTaggedText[word[2]+startDisp][0][0] != "?":
-            startDisp -= 1
-            if word[2]+startDisp < 0: break
-        try:
-            if not (originalTaggedText[word[2]+endDisp][0][0] == "!" and originalTaggedText[word[2]+endDisp+1][0][0] != '"'):
-                print "COMBINED EXCLAMATION AND QUOTE"
-                print originalTaggedText[word[2]+endDisp][1][0]
-                print originalTaggedText[word[2]+endDisp+1][1][0]
-        except:
-            startDisp += 1
-        ## Find where the sentence ends
-        endDisp = 0
-        while originalTaggedText[word[2]+endDisp][0][0] != "." and originalTaggedText[word[2]+endDisp][0][0] != ";" and (originalTaggedText[word[2]+endDisp][0][0] != "!" or originalTaggedText[word[2]+endDisp+1][0][0] != '"') and originalTaggedText[word[2]+endDisp][0][0] != "?":
-            endDisp += 1
-            try:
-                originalTaggedText[word[2]+endDisp][0][0] != "."
-            except:
-                endDisp -= 1
-                break
-        endDisp += 1
-        try:  # I want to remove these
-            if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
-                print "COMBINED EXCLAMATION AND QUOTE"
-                print originalTaggedText[word[2]+endDisp][0][0]
-                print originalTaggedText[word[2]+endDisp+1][0][0]
-        except:
-            "don't fix what ain't broke I guess"
-        ## Smash the sentence together into a human-readable string or isolated tagged sentence
-        sentence = []
-        if taggedVersion is False:
-            for i in range(endDisp - startDisp):
-                if startDisp == -i and capitalize is True:
-                    sentence.append(str.upper(str(originalTaggedText[word[2]+startDisp+i][0])))  # Capitalize the word passed to the function
-                else:
-                    sentence.append(originalTaggedText[word[2]+startDisp+i][0])
-            sentence = ' '.join(sentence)
-            ## The above process adds unnecessary spaces before punctuation,
-            ## which we remove below.
-            sentence = sentence.replace(" .", ".")
-            sentence = sentence.replace(" ,", ",")
-            sentence = sentence.replace(" !", "!")
-            sentence = sentence.replace(" ;", ";")
-            sentence = sentence.replace(" :", ":")
-            sentence = sentence.replace(" ?", "?")
-            sentence = sentence.replace(" 's", "'s")
-            sentence = sentence.replace(" 'd", "'d")
-            sentence = sentence.replace(" 've", "'ve")
-            sentence = sentence.replace(" n't", "n't")
-            sentence = sentence.replace(" '", "'")
-            sentence = sentence.replace("''", '"')
-            sentence = sentence.replace("`` ", '"')
-        elif taggedVersion is True:
-            for i in range(endDisp - startDisp):
-                if startDisp == -i and capitalize is True:
-                    # Capitalize the word passed to the function
-                    appendThis = [str.upper(originalTaggedText[word[2]+startDisp+i][0]), originalTaggedText[word[2]+startDisp+i][1]]
-                    sentence.append(appendThis)
-                else:
-                    sentence.append(originalTaggedText[word[2]+startDisp+i])
-        return sentence
+# def GrabSentence(word, capitalize=True, taggedVersion=False):
+#         ## Find where the sentence starts
+#         startDisp = 0
+#         '''print "\n\n\n"
+#         print word
+#         print originalTaggedText[word[2]+startDisp][0][0]
+#         print "\n\n\n"'''
+#         while originalTaggedText[word[2]+startDisp][0][0] != "." and originalTaggedText[word[2]+startDisp][0][0] != ";" and (originalTaggedText[word[2]+startDisp][0][0] != "!" or originalTaggedText[word[2]+startDisp+1][0][0] != '"') and originalTaggedText[word[2]+startDisp][0][0] != "?":
+#             startDisp -= 1
+#             if word[2]+startDisp < 0: break
+#         try:
+#             if not (originalTaggedText[word[2]+endDisp][0][0] == "!" and originalTaggedText[word[2]+endDisp+1][0][0] != '"'):
+#                 print "COMBINED EXCLAMATION AND QUOTE"
+#                 print originalTaggedText[word[2]+endDisp][1][0]
+#                 print originalTaggedText[word[2]+endDisp+1][1][0]
+#         except:
+#             startDisp += 1
+#         ## Find where the sentence ends
+#         endDisp = 0
+#         while originalTaggedText[word[2]+endDisp][0][0] != "." and originalTaggedText[word[2]+endDisp][0][0] != ";" and (originalTaggedText[word[2]+endDisp][0][0] != "!" or originalTaggedText[word[2]+endDisp+1][0][0] != '"') and originalTaggedText[word[2]+endDisp][0][0] != "?":
+#             endDisp += 1
+#             try:
+#                 originalTaggedText[word[2]+endDisp][0][0] != "."
+#             except:
+#                 endDisp -= 1
+#                 break
+#         endDisp += 1
+#         try:  # I want to remove these
+#             if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
+#                 print "COMBINED EXCLAMATION AND QUOTE"
+#                 print originalTaggedText[word[2]+endDisp][0][0]
+#                 print originalTaggedText[word[2]+endDisp+1][0][0]
+#         except:
+#             "don't fix what ain't broke I guess"
+#         ## Smash the sentence together into a human-readable string or isolated tagged sentence
+#         sentence = []
+#         if taggedVersion is False:
+#             for i in range(endDisp - startDisp):
+#                 if startDisp == -i and capitalize is True:
+#                     sentence.append(str.upper(str(originalTaggedText[word[2]+startDisp+i][0])))  # Capitalize the word passed to the function
+#                 else:
+#                     sentence.append(originalTaggedText[word[2]+startDisp+i][0])
+#             sentence = ' '.join(sentence)
+#             ## The above process adds unnecessary spaces before punctuation,
+#             ## which we remove below.
+#             sentence = sentence.replace(" .", ".")
+#             sentence = sentence.replace(" ,", ",")
+#             sentence = sentence.replace(" !", "!")
+#             sentence = sentence.replace(" ;", ";")
+#             sentence = sentence.replace(" :", ":")
+#             sentence = sentence.replace(" ?", "?")
+#             sentence = sentence.replace(" 's", "'s")
+#             sentence = sentence.replace(" 'd", "'d")
+#             sentence = sentence.replace(" 've", "'ve")
+#             sentence = sentence.replace(" n't", "n't")
+#             sentence = sentence.replace(" '", "'")
+#             sentence = sentence.replace("''", '"')
+#             sentence = sentence.replace("`` ", '"')
+#         elif taggedVersion is True:
+#             for i in range(endDisp - startDisp):
+#                 if startDisp == -i and capitalize is True:
+#                     # Capitalize the word passed to the function
+#                     appendThis = [str.upper(originalTaggedText[word[2]+startDisp+i][0]), originalTaggedText[word[2]+startDisp+i][1]]
+#                     sentence.append(appendThis)
+#                 else:
+#                     sentence.append(originalTaggedText[word[2]+startDisp+i])
+#         return sentence
 
 
 def detect_verb_beliefs_and_attitudes(POStaggedSentence):
     outputWordList = []  # This will contain all of the words we find that signal a belief/attitude is present
     ## Grab all verbs and put them in a list
-    spot = 0
+    # spot = 0
     verbList = []
-    for tag in POStaggedSentence:
-        if tag[1][0] == "V":
-            verb = wordPickedFromPOStaggedSentence(tag[0], tag[1], spot)
+    for eachWord in POStaggedSentence:
+        if eachWord.POStag.is_verb:
+            verb = eachWord
             verbList.append(verb)
         spot += 1
     ## Find any belief verbs
