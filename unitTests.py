@@ -6,7 +6,6 @@ from language import *
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
     def test_determine_file_type(self):
-        # from IntentionPrompts import determine_file_type
         self.assertEqual(determine_file_type("jldsnfkjds.intention"), 'intention')
         self.assertEqual(determine_file_type("intent.n.intention"), 'intention')
         self.assertEqual(determine_file_type("exampleText.txt"), "txt")
@@ -14,17 +13,56 @@ class test_functions_in_IntentionPrompts(unittest.TestCase):
 
 class test_language_objects(unittest.TestCase):
     def test_comparisons(self):
-        self.assertEqual(Tag("tag"), Tag("tag"))
         self.assertEqual(Word(["Coffee", 'NN']), Word(["Coffee", 'NN']))
-        self.assertEqual(Sentence("I want that coffee.").wordList[3], Word(["coffee", 'NN']))
+        self.assertEqual(Sentence("I want that coffee.").words[3], Word(["coffee", 'NN']))
         self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
 
-    def test_tag_class_methods(self):
-        self.assertTrue(Sentence("I want that coffee.").wordList[1].tag.is_verb())
-        self.assertEqual(Word(["Coffee", 'NN']).tag.label, 'NN')
+    def test_tags(self):
+        self.assertTrue(Sentence("I want that coffee.").words[1].is_verb())
+        self.assertEqual(Word(["Coffee", 'NN']).tag, 'NN')
+
+    def test_word_verb_tests(self):
+        self.assertEqual(False, Word(["Coffee", 'NN']).is_belief_verb())
+        self.assertEqual(True, Word(['want', 'VBP']).is_attitude_verb())
+        self.assertEqual(False, Word(['want', 'VBP']).is_belief_verb())
+        self.assertEqual(True, Word(['think', 'VBP']).is_belief_verb())
+        self.assertEqual(False, Word(['think', 'VBP']).is_attitude_verb())
+        self.assertEqual(False, Word(['coffee', 'NN']).is_attitude_verb())
+
+    def test_word_nonverb_tests(self):
+        self.assertEqual(False, Word(["Coffee", 'NN']).is_belief_nonverb())
+        self.assertEqual(True, Word(['Wants', 'NN']).is_attitude_nonverb())
+        self.assertEqual(False, Word(['Wants', 'NN']).is_belief_nonverb())
+        self.assertEqual(True, Word(['Belief', 'NN']).is_belief_nonverb())
+        self.assertEqual(False, Word(['think', 'VBP']).is_attitude_nonverb())
+        self.assertEqual(False, Word(['coffee', 'NN']).is_attitude_nonverb())
+
+    def test_contains_belief_verb(self):
+        self.assertEqual(False, Sentence("I want that coffee.").contains_belief_verb())
+        self.assertEqual(True, Sentence("I think that coffee is good.").contains_belief_verb())
+
+    def test_contains_attitude_verb(self):
+        self.assertEqual(True, Sentence("I want that coffee.").contains_attitude_verb())
+        self.assertEqual(False, Sentence("I think that coffee is good.").contains_attitude_verb())
+
+    def test_contains_a_being_verb(self):
+        self.assertEqual(True, Sentence("That is some delicious coffee.").contains_a_being_verb())
+        self.assertEqual(False, Sentence("I don't want that much coffee.").contains_a_being_verb())
+
+    def test_parse_with_grammar(self):
+        grammar = r"""
+          NP: {<DT|PP\$>?<JJ>*<NN>}
+        """
+        mys = Sentence("Rapunzel let down her long golden hair.").parse_with_grammar(grammar)
+        self.assertEqual(('long', 'JJ'), mys.chunkedSentence[4][0])
+        self.assertEqual(Tree, type(mys.chunkedSentence[4]))
 
 
-# class test_detection_functions(unittest.TestCase):
+class test_detection_functions(unittest.TestCase):
+    def test_detect_nonverb_beliefs_and_attitudes(self):
+        s1 = Sentence('My belief is that this coffee is the best in Manhattan.')
+        self.assertEqual(True, detect_nonverb_beliefs_and_attitudes(s1))
+
 #     def test_each_function_returns_correct_file_type(self):
 #         testText = """ljkndf gnkjfdg fdgdflkngdfgfdlkgf.gd dlkgdfg[fdg\
 #         klfdg fglk.g,fd/,gdfgpojdfg lmdfg ,./dfg,/ dsf';dsff;'f\

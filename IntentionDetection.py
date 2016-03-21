@@ -1,170 +1,17 @@
 import json
 import nltk
-from language import Sentence, Word, Tag
+from language import Sentence, Word
 # -*- coding: utf-8 -*-
-# from nltk.chunk import *
 
 
-# def GrabSentence(word, capitalize=True, taggedVersion=False):
-#         ## Find where the sentence starts
-#         startDisp = 0
-#         '''print "\n\n\n"
-#         print word
-#         print originalTaggedText[word[2]+startDisp][0][0]
-#         print "\n\n\n"'''
-#         while originalTaggedText[word[2]+startDisp][0][0] != "." and originalTaggedText[word[2]+startDisp][0][0] != ";" and (originalTaggedText[word[2]+startDisp][0][0] != "!" or originalTaggedText[word[2]+startDisp+1][0][0] != '"') and originalTaggedText[word[2]+startDisp][0][0] != "?":
-#             startDisp -= 1
-#             if word[2]+startDisp < 0: break
-#         try:
-#             if not (originalTaggedText[word[2]+endDisp][0][0] == "!" and originalTaggedText[word[2]+endDisp+1][0][0] != '"'):
-#                 print "COMBINED EXCLAMATION AND QUOTE"
-#                 print originalTaggedText[word[2]+endDisp][1][0]
-#                 print originalTaggedText[word[2]+endDisp+1][1][0]
-#         except:
-#             startDisp += 1
-#         ## Find where the sentence ends
-#         endDisp = 0
-#         while originalTaggedText[word[2]+endDisp][0][0] != "." and originalTaggedText[word[2]+endDisp][0][0] != ";" and (originalTaggedText[word[2]+endDisp][0][0] != "!" or originalTaggedText[word[2]+endDisp+1][0][0] != '"') and originalTaggedText[word[2]+endDisp][0][0] != "?":
-#             endDisp += 1
-#             try:
-#                 originalTaggedText[word[2]+endDisp][0][0] != "."
-#             except:
-#                 endDisp -= 1
-#                 break
-#         endDisp += 1
-#         try:  # I want to remove these
-#             if (originalTaggedText[word[2]+endDisp][1][0] == "!" and originalTaggedText[word[2]+endDisp+1][1][0] != '"'):
-#                 print "COMBINED EXCLAMATION AND QUOTE"
-#                 print originalTaggedText[word[2]+endDisp][0][0]
-#                 print originalTaggedText[word[2]+endDisp+1][0][0]
-#         except:
-#             "don't fix what ain't broke I guess"
-#         ## Smash the sentence together into a human-readable string or isolated tagged sentence
-#         sentence = []
-#         if taggedVersion is False:
-#             for i in range(endDisp - startDisp):
-#                 if startDisp == -i and capitalize is True:
-#                     sentence.append(str.upper(str(originalTaggedText[word[2]+startDisp+i][0])))  # Capitalize the word passed to the function
-#                 else:
-#                     sentence.append(originalTaggedText[word[2]+startDisp+i][0])
-#             sentence = ' '.join(sentence)
-#             ## The above process adds unnecessary spaces before punctuation,
-#             ## which we remove below.
-#             sentence = sentence.replace(" .", ".")
-#             sentence = sentence.replace(" ,", ",")
-#             sentence = sentence.replace(" !", "!")
-#             sentence = sentence.replace(" ;", ";")
-#             sentence = sentence.replace(" :", ":")
-#             sentence = sentence.replace(" ?", "?")
-#             sentence = sentence.replace(" 's", "'s")
-#             sentence = sentence.replace(" 'd", "'d")
-#             sentence = sentence.replace(" 've", "'ve")
-#             sentence = sentence.replace(" n't", "n't")
-#             sentence = sentence.replace(" '", "'")
-#             sentence = sentence.replace("''", '"')
-#             sentence = sentence.replace("`` ", '"')
-#         elif taggedVersion is True:
-#             for i in range(endDisp - startDisp):
-#                 if startDisp == -i and capitalize is True:
-#                     # Capitalize the word passed to the function
-#                     appendThis = [str.upper(originalTaggedText[word[2]+startDisp+i][0]), originalTaggedText[word[2]+startDisp+i][1]]
-#                     sentence.append(appendThis)
-#                 else:
-#                     sentence.append(originalTaggedText[word[2]+startDisp+i])
-#         return sentence
-
-
-def detect_verb_beliefs_and_attitudes(POStaggedSentence):
-    outputWordList = []  # This will contain all of the words we find that signal a belief/attitude is present
-    ## Grab all verbs and put them in a list
-    # spot = 0
-    verbList = []
-    for eachWord in POStaggedSentence:
-        if eachWord.POStag.is_verb:
-            verb = eachWord
-            verbList.append(verb)
-        spot += 1
-    ## Find any belief verbs
-    beliefVerbs = [
-        "believe", "believes", "believed", "believing",
-        "know", "knows", "knew", "knowing", "perceive",
-        "perceives", "perceive", "perceiving", "notice",
-        "notices", "noticed", "noticing", "remember",
-        "remembers", "remembered", "remembering",
-        "imagine", "imagines", "imagined", "imagining",
-        "suspect", "suspects", "suppose", "suspecting",
-        "assume", "presume", "surmise", "conclude",
-        "deduce", "understand", "understands",
-        "understood", "understanding", "judge", "doubt",
-        "thought"
-    ]
-    eachVerb = []
-    for eachVerb in verbList:
-        if str.lower(eachVerb.word) in beliefVerbs:
-            outputWordList.append(eachVerb)
-    ## Find any attitude verbs
-    attitudeVerbs = [
-        "want", "wanted", "wants", "wish",
-        "wishes", "wished", "consider", "considers",
-        "considered", "desire", "desires", "desired", "hope",
-        "hoped", "hopes", "aspire", "aspired", "aspires",
-        "fancy", "fancied", "fancies", "care", "cares",
-        "cared", "like", "likes", "liked"
-    ]
-    eachVerb = []
-    for eachVerb in verbList:
-        if str.lower(eachVerb[0]) in attitudeVerbs:
-            outputWordList.append(eachVerb)
-    return outputWordList
-
-
-def detect_nonverb_beliefs_and_attitudes(originalTaggedText):
-    ## Find 'is' verbs
-    isWords = ["is", "was", "were", "are"]
-    isVerbsFound = []
-    for eachVerb in verbList:
-        for testVerb in isWords:
-            if str.lower(eachVerb[0]) == testVerb:
-                isVerbsFound.append(eachVerb)
-    beliefNonVerbs = [
-        "belief", "beliefs", "knowledge",
-        "perception", "perceptions", "memory", "memories",
-        "suspicion", "suspicions", "assumption", "assumptions",
-        "presupposition", "presuppositions", "suppositions",
-        "supposition", "conclusion", "conclusions",
-        "understanding", "judgment", "doubt", "doubts"
-    ]
-    attitudeNonVerbs = [
-        "desire", "desires", "wants", "want", "wish", "wishes",
-        "hope", "hopes", "aspirations", "aspiration", "fancy",
-        "fancies", "care", "cares", "longing"
-    ]
+def detect_nonverb_beliefs_and_attitudes(sentence):
+    if sentence.contains_a_being_verb() is False: return False
     ## "(PRP) (belief/attitude) is..."
-    for isVerb in isVerbsFound:
-        ## First, apply a grammar
-        grammar = r"""
-          NP: {<DT|PRP\$|NNP>?<JJ>*<NN><VB.|VB>}
-        """
-        cp = nltk.RegexpParser(grammar)
-        result = cp.parse(GrabSentence(isVerb, taggedVersion=True, capitalize=False))
-        ## Then, extract the chunks found by the grammar
-        foundChunks = []
-        for eachResult in result:
-            if str(eachResult).count('/') > 0:
-                foundChunks.append(eachResult)
-        ## Check if the subject is a belief/attitude word
-        for eachChunk in foundChunks:
-            for eachWord in eachChunk:
-                if eachWord[1] == "NN":
-                    for eachBeliefNonverb in beliefNonVerbs:
-                        if str.lower(eachWord[0]) == eachBeliefNonverb:
-                            verb = [isVerb[0], isVerb[1], isVerb[2]]
-                            outputWordList.append(verb)
-                    for eachAttitudeNonverb in attitudeNonVerbs:
-                        if str.lower(eachWord[0]) == eachAttitudeNonverb:
-                            verb = [isVerb[0], isVerb[1], isVerb[2]]
-                            outputWordList.append(verb)
-    return outputWordList
+    grammar = r"""
+      IOP: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
+    """
+    sentence.parse_with_grammar(grammar)
+    return sentence.contains_chunk_with_belief_or_attitude_word()
 
 
 def find_all_that_words(POSTaggedSentence):
@@ -189,7 +36,7 @@ def detect_intention_using_that_clauses(POSTaggedSentence):
     for thatWord in THATWordsFound:
         ## First, apply a grammar
         grammar = r"""
-          NP: {<VB.|VB><IN>}
+          TP: {<VB.|VB><IN>}
         """
         myParser = nltk.RegexpParser(grammar)
         result = myParser.parse(GrabSentence(thatWord, taggedVersion=True, capitalize=False))
@@ -209,18 +56,13 @@ def detect_intention_using_that_clauses(POSTaggedSentence):
     return True
 
 
-def is_sentence_intentional(POSTaggedSentence):
+def is_sentence_intentional(sentence):
     ############################################################
     ## Returns a sentence when given a word with its location ##
     ############################################################
-    if detect_verb_beliefs_and_attitudes(POSTaggedSentence) is not False:
-        return True
-    outputWordList.append(detect_nonverb_beliefs_and_attitudes(POSTaggedSentence))
-    outputWordList.append(detect_intention_using_that_clauses(POSTaggedSentence))
-    functionOutput = []
-    for word in outputWordList:
-        functionOutput.append(GrabSentence(word))
-    functionOutput = '\n'.join(functionOutput)
+    return sentence.contains_belief_verb() or sentence.contains_attitude_verb()
+    outputWordList.append(detect_nonverb_beliefs_and_attitudes(sentence))
+    # outputWordList.append(detect_intention_using_that_clauses(sentence))
     return functionOutput
 
 
