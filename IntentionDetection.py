@@ -8,7 +8,7 @@ def detect_nonverb_beliefs_and_attitudes(sentence):
     if sentence.contains_a_being_verb() is False: return False
     ## "(PRP) (belief/attitude) is..."
     grammar = r"""
-      IOP: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
+      IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
     sentence.parse_with_grammar(grammar)
     return sentence.contains_chunk_with_belief_or_attitude_word()
@@ -60,10 +60,12 @@ def is_sentence_intentional(sentence):
     ############################################################
     ## Returns a sentence when given a word with its location ##
     ############################################################
-    return sentence.contains_belief_verb() or sentence.contains_attitude_verb()
-    outputWordList.append(detect_nonverb_beliefs_and_attitudes(sentence))
-    # outputWordList.append(detect_intention_using_that_clauses(sentence))
-    return functionOutput
+    return sentence.contains_belief_verb() or \
+        sentence.contains_attitude_verb() or \
+        detect_nonverb_beliefs_and_attitudes(sentence)
+    detect_nonverb_beliefs_and_attitudes(sentence)
+    detect_intention_using_that_clauses(sentence)
+    raise Exception
 
 
 def print_all_intentional_sentences(raw_text):
@@ -158,3 +160,9 @@ def pos_tag_each_tokenized_sentence(tokens):
             eachTaggedSentence = nltk.pos_tag(tokens)
             pos_tagged_paragraphs.append(eachTaggedSentence)
         return pos_tagged_paragraphs
+
+if __name__ == '__main__':
+    import unittest
+    from unitTests import test_detection_functions
+    suite = unittest.TestLoader().loadTestsFromTestCase(test_detection_functions)
+    unittest.TextTestRunner(verbosity=2).run(suite)

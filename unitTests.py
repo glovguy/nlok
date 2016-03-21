@@ -61,7 +61,9 @@ class test_language_objects(unittest.TestCase):
 class test_detection_functions(unittest.TestCase):
     def test_detect_nonverb_beliefs_and_attitudes(self):
         s1 = Sentence('My belief is that this coffee is the best in Manhattan.')
+        s2 = Sentence('My dog is very obedient.')
         self.assertEqual(True, detect_nonverb_beliefs_and_attitudes(s1))
+        self.assertEqual(False, detect_nonverb_beliefs_and_attitudes(s2))
 
 #     def test_each_function_returns_correct_file_type(self):
 #         testText = """ljkndf gnkjfdg fdgdflkngdfgfdlkgf.gd dlkgdfg[fdg\
@@ -73,10 +75,15 @@ class test_detection_functions(unittest.TestCase):
 #         self.assertEqual(type(returnedValue1), type(['', 1]))
 #         self.assertEqual(type(returnedValue2), type(['', 1]))
 
-#     def test_detect_verb_beliefs_and_attitudes(self):
-#         test1 = '"How deaf and stupid have I been!" he thought, walking swiftly along.'
-#         returnedValue1 = detect_verb_beliefs_and_attitudes(test1)
-#         self.assertEqual(returnedValue1[1], [1])
+    def test_is_sentence_intentional(self):
+        s1 = Sentence('"How deaf and stupid have I been!" he thought, walking swiftly along.')
+        s2 = Sentence("This is a sentence that doesn't express intention.")
+        s3 = Sentence('I want this sentence to express intention..')
+        s4 = Sentence('He started to feel that that was enough coffee for today.')
+        self.assertEqual(True, is_sentence_intentional(s1))
+        self.assertEqual(False, is_sentence_intentional(s2))
+        self.assertEqual(True, is_sentence_intentional(s3))
+        self.assertEqual(True, is_sentence_intentional(s4))
 
 #     def test_count_sentences(self):
 #         unitTestText = """
