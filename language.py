@@ -3,12 +3,15 @@ from nltk import word_tokenize, pos_tag, RegexpParser, Tree
 
 class Word(object):
     'Understands the atomic composition of letters'
-    def __init__(self, word):
-        self.text = word[0]
-        self.tag = word[1]
+    def __init__(self, text, tag=None):
+        if type(text) == list or type(text) == tuple and tag is None:
+            tag = text[1]
+            text = text[0]
+        self.text = str(text)
+        self.tag = str(tag)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and self.text == other.text and self.tag == other.tag)
+        return (isinstance(other, self.__class__) and str.lower(self.text) == str.lower(other.text))
 
     def is_verb(self):
         return self.tag[0] == 'V'
@@ -66,6 +69,12 @@ class Word(object):
         ]
         return str.lower(self.text) in attitudeNonVerbs and not self.is_verb()
 
+    def is_phenomenal_word(self):
+        phenomenalWords = [
+            "feel", "feels", "thought", "think"
+        ]
+        return str.lower(self.text) in phenomenalWords
+
     def __hash__(self):
         return hash(frozenset(self.text))
 
@@ -78,7 +87,9 @@ class Sentence(object):
         self.POStags = pos_tag(tokenList)
         self.words = []
         for eachWord in self.POStags:
-            self.words.append(Word(eachWord))
+            text = eachWord[0]
+            tag = eachWord[1]
+            self.words.append(Word(text, tag))
         self.chunks = []
 
     def __eq__(self, other):
@@ -86,6 +97,9 @@ class Sentence(object):
 
     def __hash__(self):
         return hash(frozenset(self.text))
+
+    def contains_word(self, word):
+        return True in [eachWord == word for eachWord in self.words]
 
     def contains_belief_verb(self):
         return True in [eachWord.is_belief_verb() for eachWord in self.words]
@@ -96,6 +110,9 @@ class Sentence(object):
     def contains_a_being_verb(self):
         return True in [eachWord.is_a_being_verb() for eachWord in self.words]
 
+    def contains_a_phenomenal_word(self):
+        return True in [eachWord.is_phenomenal_word() for eachWord in self.words]
+
     def parse_with_grammar(self, grammar):
         self.chunkedSentence = RegexpParser(grammar).parse(self.POStags)
         return self
@@ -105,6 +122,12 @@ class Sentence(object):
         flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
         listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
         return True in [x.is_belief_nonverb() or x.is_attitude_nonverb() for x in listOfAllWordsInSubtrees]
+
+    def contains_chunk_with_phenomenal_word(self):
+        allSubtrees = [x for x in self.chunkedSentence if type(x) == Tree]
+        flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
+        listOfAllWordsInSubtrees = [Word(x[0], x[1]) for sublist in flattenedSubtrees for x in sublist]
+        return True in [x.is_phenomenal_word() for x in listOfAllWordsInSubtrees]
 
 
 if __name__ == '__main__':

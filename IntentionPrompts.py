@@ -1,17 +1,21 @@
 import json
 import nltk
+import IntentionDetection
 
-class wordPickedFromPOStaggedSentence(object):
-    def __init__(self, word, POStag, spotInSentence):
-        self.word = word
-        self.POStag = POStag
-        self.spotInSentence = spotInSentence
 
-class wordPickedFromPOStaggedSentence(object):
-    def __init__(self, word, POStag, spotInSentence):
-        self.word = word
-        self.POStag = POStag
-        self.spotInSentence = spotInSentence
+# class wordPickedFromPOStaggedSentence(object):
+#     def __init__(self, word, POStag, spotInSentence):
+#         self.word = word
+#         self.POStag = POStag
+#         self.spotInSentence = spotInSentence
+
+
+# class wordPickedFromPOStaggedSentence(object):
+#     def __init__(self, word, POStag, spotInSentence):
+#         self.word = word
+#         self.POStag = POStag
+#         self.spotInSentence = spotInSentence
+
 
 def save_and_quit(my_output, fileName):
     outputFileName = raw_input('what would you like to call the new filename?\n: ')
@@ -134,7 +138,7 @@ if __name__ == "__main__":
         selectedFunction = input("\n: ")
         if selectedFunction == 1:
             ## 1: Detect and print all intentional sentences
-            print_all_intentional_sentences(raw_text)
+            IntentionDetection.print_all_intentional_sentences(raw_text)
         elif selectedFunction == 2:
             ## 2: Detect the number of intentional sentences in the entire document
             total_number_of_intentional_sentences(raw_text)
@@ -147,6 +151,8 @@ if __name__ == "__main__":
             save_and_quit(my_output, fileName)
         elif selectedFunction == 0:
             ## 0: Perform unit tests
+            import unittest
+            from unitTests import *
             unittest.main()
         else:
             print "Invalid entry"

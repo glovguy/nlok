@@ -14,46 +14,42 @@ def detect_nonverb_beliefs_and_attitudes(sentence):
     return sentence.contains_chunk_with_belief_or_attitude_word()
 
 
-def find_all_that_words(POSTaggedSentence):
-    index = 0
-    THATWordsFound = []
-    for eachTaggedWord in originalTaggedText:
-        if str.lower(eachTaggedWord[0]) == "that":
-            word = wordPickedFromPOStaggedSentence(eachTaggedWord[0], eachTaggedWord[1], index)
-            THATWordsFound.append(word)
-        index += 1
-    return THATWordsFound
+# def find_all_that_words(POSTaggedSentence):
+#     index = 0
+#     THATWordsFound = []
+#     for eachTaggedWord in originalTaggedText:
+#         if str.lower(eachTaggedWord[0]) == "that":
+#             word = wordPickedFromPOStaggedSentence(eachTaggedWord[0], eachTaggedWord[1], index)
+#             THATWordsFound.append(word)
+#         index += 1
+#     return THATWordsFound
 
 
-def detect_intention_using_that_clauses(POSTaggedSentence):
-    THATWordsFound = find_all_that_words(POSTaggedSentence)
-    if THATWordsFound is []:
-        return []
-    phenomenalVerbs = [
-        "feel", "feels", "thought", "think"
-    ]
+def detect_intention_using_that_clauses(sentence):
+    if sentence.contains_word(Word('that')) is False:
+        print "AHH"
     ## "(VB) that ..."
-    for thatWord in THATWordsFound:
-        ## First, apply a grammar
-        grammar = r"""
-          TP: {<VB.|VB><IN>}
-        """
-        myParser = nltk.RegexpParser(grammar)
-        result = myParser.parse(GrabSentence(thatWord, taggedVersion=True, capitalize=False))
-        ## Then, extract the chunks found by the grammar
-        foundChunks = []
-        for eachResult in result:
-            if str(eachResult).count('/') > 0:
-                foundChunks.append(eachResult)
-        ## Check if the subject is a belief/attitude word
-        for eachChunk in foundChunks:
-            for eachWord in eachChunk:
-                if eachWord[1] == "VB":
-                    for eachPhenomenalVerb in phenomenalVerbs:
-                        if str.lower(eachWord[0]) == eachPhenomenalVerb:
-                            verb = [thatWord[0], thatWord[1], thatWord[2]]
-                            outputWordList.append(verb)
-    return True
+    ## First, apply a grammar
+    grammar = r"""
+      ThatClause: {<VB.|VB><IN>}
+    """
+    sentence.parse_with_grammar(grammar)
+    return sentence.contains_chunk_with_phenomenal_word()
+
+    ## Then, extract the chunks found by the grammar
+    # foundChunks = []
+    # for eachResult in result:
+    #     if str(eachResult).count('/') > 0:
+    #         foundChunks.append(eachResult)
+    # ## Check if the subject is a belief/attitude word
+    # for eachChunk in foundChunks:
+    #     for eachWord in eachChunk:
+    #         if eachWord[1] == "VB":
+    #             for eachPhenomenalVerb in phenomenalVerbs:
+    #                 if str.lower(eachWord[0]) == eachPhenomenalVerb:
+    #                     verb = [thatWord[0], thatWord[1], thatWord[2]]
+    #                     outputWordList.append(verb)
+    # return True
 
 
 def is_sentence_intentional(sentence):
@@ -62,14 +58,13 @@ def is_sentence_intentional(sentence):
     ############################################################
     return sentence.contains_belief_verb() or \
         sentence.contains_attitude_verb() or \
-        detect_nonverb_beliefs_and_attitudes(sentence)
-    detect_nonverb_beliefs_and_attitudes(sentence)
-    detect_intention_using_that_clauses(sentence)
+        detect_nonverb_beliefs_and_attitudes(sentence) or \
+        detect_intention_using_that_clauses(sentence)
     raise Exception
 
 
 def print_all_intentional_sentences(raw_text):
-    tokens = IntentionDetection.tokenize_each_sentence(raw_text)
+    tokens = tokenize_each_sentence(raw_text)
     pos_tagged_paragraphs = IntentionDetection.pos_tag_each_tokenized_sentence(tokens)
     for eachParagraph in pos_tagged_paragraphs:
         print eachParagraph
