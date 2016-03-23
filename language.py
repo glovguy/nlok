@@ -1,4 +1,5 @@
-from nltk import word_tokenize, pos_tag, RegexpParser, Tree
+from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data
+import IntentionDetection
 
 
 class Word(object):
@@ -93,6 +94,7 @@ class Sentence(object):
         self.chunks = []
 
     def __eq__(self, other):
+        # print self.text, other.text
         return (isinstance(other, self.__class__) and self.text == other.text)
 
     def __hash__(self):
@@ -126,8 +128,28 @@ class Sentence(object):
     def contains_chunk_with_phenomenal_word(self):
         allSubtrees = [x for x in self.chunkedSentence if type(x) == Tree]
         flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
-        listOfAllWordsInSubtrees = [Word(x[0], x[1]) for sublist in flattenedSubtrees for x in sublist]
+        listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
         return True in [x.is_phenomenal_word() for x in listOfAllWordsInSubtrees]
+
+
+class Paragraphs(object):
+    'Understands series of sentences that forms a complete document'
+    def __init__(self, text):
+        self.text = text
+        sentence_detector = data.load('tokenizers/punkt/english.pickle')
+        self.sentences = [Sentence(x) for x in sentence_detector.tokenize(text.strip())]
+
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__) and self.text == other.text)
+
+    def __hash__(self):
+        return hash(frozenset(self.text))
+
+    def all_intentional_sentences(self):
+        return [x for x in self.sentences if IntentionDetection.is_sentence_intentional(x)]
+
+    def count_sentences(self):
+        return len(self.sentences)
 
 
 if __name__ == '__main__':
