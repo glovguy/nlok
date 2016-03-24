@@ -4,6 +4,20 @@ The goal behind this project is to see if I can build a program that will recogn
 
 The aim is not to digest or understand the sentences, its goal is simply to label them.
 
+**Run `main.py` and give it a .txt file** in order to:
+1. Print all intentional sentences,
+2. Count the number of intentional sentences,
+3. Return an array noting the density of intentional statements in all sentences of the text.
+
+**Functions in IntentionDetection.py**
+```python
+>>> import IntentionDetection
+>>> IntentionDetection.DetectIntentions("I want to get some coffee.")
+'I WANT to get some coffee.'
+>>> IntentionDetection.countSentences("I want some coffee. It is not raining today.")
+2
+```
+
 ## Intentional sentences
 
 Intentional sentences can be roughly thought of as causal descriptions of social phenomena. They are part of our understanding of other minds, or more specifically, about willfulness. (This is not to be confused with Bretano’s “intentionality”, which describes the nature of our mental states to be “directed at” some object.)

@@ -1,7 +1,6 @@
-
+*.pyc
+.DS_Store
+codeGraveyard.*
 *.komodoproject
 *.pyc
-codeGraveyard.*
-TextExamples
-*.intention
-
+TextExamples/
