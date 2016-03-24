@@ -3,20 +3,6 @@ import nltk
 import IntentionDetection
 
 
-# class wordPickedFromPOStaggedSentence(object):
-#     def __init__(self, word, POStag, spotInSentence):
-#         self.word = word
-#         self.POStag = POStag
-#         self.spotInSentence = spotInSentence
-
-
-# class wordPickedFromPOStaggedSentence(object):
-#     def __init__(self, word, POStag, spotInSentence):
-#         self.word = word
-#         self.POStag = POStag
-#         self.spotInSentence = spotInSentence
-
-
 def save_and_quit(my_output, fileName):
     outputFileName = raw_input('what would you like to call the new filename?\n: ')
     if outputFileName == '':

@@ -58,13 +58,13 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(Tree, type(mys.chunkedSentence[4]))
 
     def test_paragraph_init(self):
-        p1 = Paragraphs("I like coffee. I also like listening to music.")
+        p1 = Passage("I like coffee. I also like listening to music.")
         s1 = Sentence("I like coffee.")
         s2 = Sentence("I also like listening to music.")
         self.assertEqual(p1.sentences, [s1, s2])
 
     def test_count_sentences(self):
-        p1 = Paragraphs("""But I, who wanted to read the book of the world and the book of my own being, I have,\
+        p1 = Passage("""But I, who wanted to read the book of the world and the book of my own being, I have,\
          for the sake of a meaning I had anticipated before I read, scorned the symbols and letters, I\
          called the visible world a deception, called my eyes and my tongue coincidental and worthless forms\
          without substance. No, this is over, I have awakened, I have indeed awakened and have not been born\
@@ -72,6 +72,16 @@ class test_language_objects(unittest.TestCase):
         This is a sentence that doesn't express intention. I want this sentence to express intention..
         He started to feel that that was enough coffee for today.""")
         self.assertEqual(p1.count_sentences(), 5)
+
+    def test_intentional_sentences_density(self):
+        p1 = Passage("""But I, who wanted to read the book of the world and the book of my own being, I have,\
+         for the sake of a meaning I had anticipated before I read, scorned the symbols and letters, I
+         called the visible world a deception, called my eyes and my tongue coincidental and worthless forms
+         without substance. No, this is over, I have awakened, I have indeed awakened and have not been born
+         before this very day."
+        This is a sentence that doesn't express intention. I want this sentence to express intention..
+        He started to feel that that was enough coffee for today.""")
+        self.assertEqual(p1.intentional_sentences_density(), [True, False, False, True, True])
 
 
 class test_detection_functions(unittest.TestCase):
@@ -96,7 +106,7 @@ class test_detection_functions(unittest.TestCase):
         self.assertEqual(True, is_sentence_intentional(s4))
 
     def test_all_intentional_sentences(self):
-        p1 = Paragraphs("""
+        p1 = Passage("""
         "How deaf and stupid have I been!" he thought, walking swiftly along. "When someone reads a text,\
          wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
          coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
@@ -117,6 +127,7 @@ class test_detection_functions(unittest.TestCase):
         self.assertTrue(s1 in p1.all_intentional_sentences())
         self.assertTrue(s2 in p1.all_intentional_sentences())
         self.assertTrue(s3 in p1.all_intentional_sentences())
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=1)

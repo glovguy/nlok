@@ -48,8 +48,8 @@ class Word(object):
         return str.lower(self.text) in attitudeVerbs and self.is_verb()
 
     def is_a_being_verb(self):
-        isWords = ["is", "was", "were", "are"]
-        return str.lower(self.text) in isWords
+        beingWords = ["is", "was", "were", "are"]
+        return str.lower(self.text) in beingWords
 
     def is_belief_nonverb(self):
         beliefNonVerbs = [
@@ -132,8 +132,8 @@ class Sentence(object):
         return True in [x.is_phenomenal_word() for x in listOfAllWordsInSubtrees]
 
 
-class Paragraphs(object):
-    'Understands series of sentences that forms a complete document'
+class Passage(object):
+    'Understands text document that is being analyzed'
     def __init__(self, text):
         self.text = text
         sentence_detector = data.load('tokenizers/punkt/english.pickle')
@@ -150,6 +150,9 @@ class Paragraphs(object):
 
     def count_sentences(self):
         return len(self.sentences)
+
+    def intentional_sentences_density(self):
+        return [IntentionDetection.is_sentence_intentional(x) for x in self.sentences]
 
 
 if __name__ == '__main__':
