@@ -4,3 +4,4 @@ codeGraveyard.*
 *.komodoproject
 *.pyc
 TextExamples/
+*.intention
