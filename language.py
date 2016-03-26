@@ -1,5 +1,6 @@
-from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data
+from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data, sent_tokenize
 import IntentionDetection
+# -*- coding: utf-8 -*-
 
 
 class Word(object):
@@ -8,11 +9,11 @@ class Word(object):
         if type(text) == list or type(text) == tuple and tag is None:
             tag = text[1]
             text = text[0]
-        self.text = str(text)
+        self.text = unicode(text)
         self.tag = str(tag)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and str.lower(self.text) == str.lower(other.text))
+        return (isinstance(other, self.__class__) and unicode.lower(self.text) == unicode.lower(other.text))
 
     def is_verb(self):
         return self.tag[0] == 'V'
@@ -34,7 +35,7 @@ class Word(object):
             "understood", "understanding", "judge", "doubt",
             "thought", "think"
         ]
-        return (str.lower(self.text) in beliefVerbs and self.is_verb()) is True
+        return (unicode.lower(self.text) in beliefVerbs and self.is_verb()) is True
 
     def is_attitude_verb(self):
         attitudeVerbs = [
@@ -45,11 +46,11 @@ class Word(object):
             "fancy", "fancied", "fancies", "care", "cares",
             "cared", "like", "likes", "liked"
         ]
-        return str.lower(self.text) in attitudeVerbs and self.is_verb()
+        return unicode.lower(self.text) in attitudeVerbs and self.is_verb()
 
     def is_a_being_verb(self):
         beingWords = ["is", "was", "were", "are"]
-        return str.lower(self.text) in beingWords
+        return unicode.lower(self.text) in beingWords
 
     def is_belief_nonverb(self):
         beliefNonVerbs = [
@@ -60,7 +61,7 @@ class Word(object):
             "supposition", "conclusion", "conclusions",
             "understanding", "judgment", "doubt", "doubts"
         ]
-        return str.lower(self.text) in beliefNonVerbs and not self.is_verb()
+        return unicode.lower(self.text) in beliefNonVerbs and not self.is_verb()
 
     def is_attitude_nonverb(self):
         attitudeNonVerbs = [
@@ -68,13 +69,13 @@ class Word(object):
             "hope", "hopes", "aspirations", "aspiration", "fancy",
             "fancies", "care", "cares", "longing"
         ]
-        return str.lower(self.text) in attitudeNonVerbs and not self.is_verb()
+        return unicode.lower(self.text) in attitudeNonVerbs and not self.is_verb()
 
     def is_phenomenal_word(self):
         phenomenalWords = [
             "feel", "feels", "thought", "think"
         ]
-        return str.lower(self.text) in phenomenalWords
+        return unicode.lower(self.text) in phenomenalWords
 
     def __hash__(self):
         return hash(frozenset(self.text))
@@ -83,7 +84,7 @@ class Word(object):
 class Sentence(object):
     'Understands series of words that forms a complete thought'
     def __init__(self, text):
-        self.text = text
+        self.text = unicode(text).strip()
         tokenList = word_tokenize(text)
         self.POStags = pos_tag(tokenList)
         self.words = []
@@ -94,7 +95,6 @@ class Sentence(object):
         self.chunks = []
 
     def __eq__(self, other):
-        # print self.text, other.text
         return (isinstance(other, self.__class__) and self.text == other.text)
 
     def __hash__(self):
@@ -135,9 +135,12 @@ class Sentence(object):
 class Passage(object):
     'Understands text document that is being analyzed'
     def __init__(self, text):
-        self.text = text
-        sentence_detector = data.load('tokenizers/punkt/english.pickle')
-        self.sentences = [Sentence(x) for x in sentence_detector.tokenize(text.strip())]
+        self.text = unicode(text).strip()
+        # sentence_detector = data.load('tokenizers/punkt/english.pickle')
+        # sentences=nltk.sent_tokenize(sample.decode('utf-8'))
+        # -*- coding: utf-8 -*-
+        self.sentences = [Sentence(x.strip()) for x in sent_tokenize(text)]
+        # sentence_detector.tokenize(text.strip())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and self.text == other.text)

@@ -16,10 +16,12 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(Word("Coffee", 'NN'), Word("Coffee", 'NN'))
         self.assertEqual(Sentence("I want that coffee.").words[3], Word("coffee", 'NN'))
         self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
+        self.assertEqual(Sentence("I want that coffee."), Sentence(u"I want that coffee."))
 
     def test_tags(self):
         self.assertTrue(Sentence("I want that coffee.").words[1].is_verb())
         self.assertEqual(Word("Coffee", 'NN').tag, 'NN')
+        self.assertEqual(Word(u"Coffee", u'NN').tag, u'NN')
 
     def test_word_verb_tests(self):
         self.assertEqual(False, Word("Coffee", 'NN').is_belief_verb())
@@ -28,6 +30,7 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Word('think', 'VBP').is_belief_verb())
         self.assertEqual(False, Word('think', 'VBP').is_attitude_verb())
         self.assertEqual(False, Word('coffee', 'NN').is_attitude_verb())
+        self.assertEqual(True, Word(u'think', u'VBP').is_belief_verb())
 
     def test_word_nonverb_tests(self):
         self.assertEqual(False, Word("Coffee", 'NN').is_belief_nonverb())
@@ -100,30 +103,32 @@ class test_detection_functions(unittest.TestCase):
         s2 = Sentence("This is a sentence that doesn't express intention.")
         s3 = Sentence('I want this sentence to express intention..')
         s4 = Sentence('He started to feel that that was enough coffee for today.')
+        s5 = Sentence(u'I want this sentence to express intention..')
         self.assertEqual(True, is_sentence_intentional(s1))
         self.assertEqual(False, is_sentence_intentional(s2))
         self.assertEqual(True, is_sentence_intentional(s3))
         self.assertEqual(True, is_sentence_intentional(s4))
+        self.assertEqual(True, is_sentence_intentional(s5))
 
     def test_all_intentional_sentences(self):
-        p1 = Passage("""
-        "How deaf and stupid have I been!" he thought, walking swiftly along. "When someone reads a text,\
-         wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
-         coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
-         letter. But I, who wanted to read the book of the world and the book of my own being, I have,\
-         for the sake of a meaning I had anticipated before I read, scorned the symbols and letters, I\
-         called the visible world a deception, called my eyes and my tongue coincidental and worthless forms\
-         without substance. No, this is over, I have awakened, I have indeed awakened and have not been born\
-         before this very day."
-        This is a sentence that doesn't express intention. I want this sentence to express intention..
-        He started to feel that that was enough coffee for today.
-        """)
+        p1 = Passage(u'''
+"How deaf and stupid have I been!" he thought, walking swiftly along. "When someone reads a text,\
+wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
+coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
+letter. But I, who wanted to read the book of the world and the book of my own being, I have,\
+for the sake of a meaning I had anticipated before I read, scorned the symbols and letters, I\
+called the visible world a deception, called my eyes and my tongue coincidental and worthless forms\
+without substance. No, this is over, I have awakened, I have indeed awakened and have not been born\
+before this very day."
+This is a sentence that doesn't express intention. I want this sentence to express intention..
+He started to feel that that was enough coffee for today.
+        ''')
         s1 = Sentence("I want this sentence to express intention..")
         s2 = Sentence("He started to feel that that was enough coffee for today.")
-        s3 = Sentence(""""When someone reads a text,\
-         wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
-         coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
-         letter.""")
+        s3 = Sentence(u'''"When someone reads a text,\
+wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
+coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
+letter.''')
         self.assertTrue(s1 in p1.all_intentional_sentences())
         self.assertTrue(s2 in p1.all_intentional_sentences())
         self.assertTrue(s3 in p1.all_intentional_sentences())

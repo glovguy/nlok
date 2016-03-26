@@ -1,6 +1,7 @@
-import json
-import nltk
-from language import Sentence, Word, Passage
+# import json
+# import nltk
+from language import Word
+# -*- coding: utf-8 -*-
 
 
 def detect_nonverb_beliefs_and_attitudes(sentence):
