@@ -6,8 +6,8 @@ from language import *
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
     def test_determine_file_type(self):
-        self.assertEqual(determine_file_type("jldsnfkjds.intention"), 'intention')
-        self.assertEqual(determine_file_type("intent.n.intention"), 'intention')
+        self.assertEqual(determine_file_type("jldsnfkjds.json"), 'json')
+        self.assertEqual(determine_file_type("intent.n.json"), 'json')
         self.assertEqual(determine_file_type("exampleText.txt"), "txt")
 
 

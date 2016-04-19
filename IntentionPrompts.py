@@ -8,10 +8,10 @@ from language import Passage, Sentence, Word
 def save_and_quit(my_output, fileName):
     outputFileName = raw_input('what would you like to call the new filename?\n: ')
     if outputFileName == '':
-        print "assuming it is the same as input, but with '.intention' appended"
+        print "assuming it is the same as input, but with '.json' appended"
         outputFileName = fileName
-    elif '.intention' not in outputFileName:
-        outputFileName = outputFileName + '.intention'
+    elif '.json' not in outputFileName:
+        outputFileName = outputFileName + '.json'
     output_file = open(outputFileName, 'w')
     json.dump(my_output, output_file)
     print "my_output"
@@ -34,7 +34,7 @@ def load_file(fileName, fileTYPE):
             textFile = codecs.open(fileName, "rb", encoding="utf-8")
         except:
             quit("ERROR FINDING FILE")
-    if fileTYPE == "intention":
+    if fileTYPE == "json":
         rawText = json.load(textFile)
     elif file_type == "txt":
         rawText = textFile.readlines()
@@ -46,8 +46,8 @@ def load_file(fileName, fileTYPE):
 
 
 def determine_file_type(fileName):
-    if fileName[-10:] == ".intention":
-        fileTYPE = "intention"
+    if fileName[-5:] == ".json":
+        fileTYPE = "json"
     elif fileName[-4:] == ".txt":
         fileTYPE = "txt"
     else:
@@ -123,7 +123,7 @@ if __name__ == "__main__":
         print "1: Print all intentional sentences"
         print "2: Give the number of sentences in the entire document"
         print "3: Print report on density of intentional statements in text"
-        print "4: Manually enter intention data and save as .intention file"
+        print "4: Manually enter intention data and save as .json file"
         print "0: Unit tests"
         selectedFunction = input("\n: ")
         if selectedFunction == 1:
@@ -149,12 +149,15 @@ if __name__ == "__main__":
             print "Invalid entry"
     elif file_type == "intention":
         print "And what would you like to do with this file?"
-        print "1: Print this .intention file"
+        print "1: Print this .json file"
         print "2: Pick up prompting where you last left off"
-        selectedFunction = input("\n: ")
-        if selectedFunction == 1:
+        print "3: Count number of intentional vs. ego sentences"
+        userSelected = input("\n: ")
+        if userSelected is 1:
             print raw_text
-        elif selectedFunction == 2:
+        elif userSelected is 2:
             restart_prompting(rawText)
+        elif userSelected is 3:
+            exit("uh oh")
         else:
             print "Invalid entry"
