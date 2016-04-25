@@ -4,3 +4,4 @@ codeGraveyard.*
 *.komodoproject
 TextExamples/
 *.intention
+*.idea
