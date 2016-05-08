@@ -1,12 +1,9 @@
-# import json
-# import nltk
-from language import Word
 # -*- coding: utf-8 -*-
 
 
 def detect_nonverb_beliefs(sentence):
     ## "(PRP) (belief) is..."
-    if sentence.contains_a_being_verb() is False: return False
+    if sentence.contains_word_type('being', 'verb') is False: return False
     grammar = r"""
       IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
@@ -16,7 +13,7 @@ def detect_nonverb_beliefs(sentence):
 
 def detect_nonverb_attitudes(sentence):
     ## "(PRP) (attitude) is..."
-    if sentence.contains_a_being_verb() is False: return False
+    if sentence.contains_word_type('being', 'verb') is False: return False
     grammar = r"""
       IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
@@ -26,7 +23,7 @@ def detect_nonverb_attitudes(sentence):
 
 def detect_intention_using_that_clauses(sentence):
     ## "(VB) that ..."
-    if sentence.contains_word(Word('that')) is False: return False
+    if sentence.contains_word('that') is False: return False
     grammar = r"""
       ThatClause: {<VB.|VB><IN>}
     """
@@ -36,20 +33,20 @@ def detect_intention_using_that_clauses(sentence):
 
 
 def is_sentence_intentional(sentence):
-    return sentence.contains_belief_verb() or \
-        sentence.contains_attitude_verb() or \
+    return sentence.contains_word_type('belief', 'verb') or \
+        sentence.contains_word_type('attitude', 'verb') or \
         detect_nonverb_beliefs(sentence) or \
         detect_nonverb_attitudes(sentence) or \
         detect_intention_using_that_clauses(sentence)
 
 
 def sentence_indicates_desire(sentence):
-    return sentence.contains_attitude_verb() or \
+    return sentence.contains_word_type('attitude', 'verb') or \
         detect_nonverb_attitudes(sentence)
 
 
 def sentence_indicates_belief(sentence):
-    return sentence.contains_desire_verb() or \
+    return sentence.contains_word_type('desire', 'verb') or \
         detect_nonverb_beliefs(sentence) or \
         detect_intention_using_that_clauses(sentence)
 

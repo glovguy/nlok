@@ -27,38 +27,38 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(str(w1), "fancy")
 
     def test_tags(self):
-        self.assertTrue(Sentence("I want that coffee.").words[1].is_verb())
+        self.assertTrue(Sentence("I want that coffee.").words[1].is_type('verb'))
         self.assertEqual(Word("Coffee", 'NN').tag, 'NN')
         self.assertEqual(Word(u"Coffee", u'NN').tag, u'NN')
 
     def test_word_verb_tests(self):
-        self.assertEqual(False, Word("Coffee", 'NN').is_belief_verb())
-        self.assertEqual(True, Word('want', 'VBP').is_attitude_verb())
-        self.assertEqual(False, Word('want', 'VBP').is_belief_verb())
-        self.assertEqual(True, Word('think', 'VBP').is_belief_verb())
-        self.assertEqual(False, Word('think', 'VBP').is_attitude_verb())
-        self.assertEqual(False, Word('coffee', 'NN').is_attitude_verb())
-        self.assertEqual(True, Word(u'think', u'VBP').is_belief_verb())
+        self.assertEqual(False, Word("Coffee", 'NN').is_type('belief', 'verb'))
+        self.assertEqual(True, Word('want', 'VBP').is_type('attitude', 'verb'))
+        self.assertEqual(False, Word('want', 'VBP').is_type('belief', 'verb'))
+        self.assertEqual(True, Word('think', 'VBP').is_type('belief', 'verb'))
+        self.assertEqual(False, Word('think', 'VBP').is_type('attitude', 'verb'))
+        self.assertEqual(False, Word('coffee', 'NN').is_type('attitude', 'verb'))
+        self.assertEqual(True, Word(u'think', u'VBP').is_type('belief', 'verb'))
 
     def test_word_nonverb_tests(self):
-        self.assertEqual(False, Word("Coffee", 'NN').is_belief_nonverb())
-        self.assertEqual(True, Word('Wants', 'NN').is_attitude_nonverb())
-        self.assertEqual(False, Word('Wants', 'NN').is_belief_nonverb())
-        self.assertEqual(True, Word('Belief', 'NN').is_belief_nonverb())
-        self.assertEqual(False, Word('think', 'VBP').is_attitude_nonverb())
-        self.assertEqual(False, Word('coffee', 'NN').is_attitude_nonverb())
+        self.assertEqual(False, Word("Coffee", 'NN').is_type('belief', 'nonverb'))
+        self.assertEqual(True, Word('Wants', 'NN').is_type('attitude', 'nonverb'))
+        self.assertEqual(False, Word('Wants', 'NN').is_type('belief', 'nonverb'))
+        self.assertEqual(True, Word('Belief', 'NN').is_type('belief', 'nonverb'))
+        self.assertEqual(False, Word('think', 'VBP').is_type('attitude', 'nonverb'))
+        self.assertEqual(False, Word('coffee', 'NN').is_type('attitude', 'nonverb'))
 
     def test_contains_belief_verb(self):
-        self.assertEqual(False, Sentence("I want that coffee.").contains_belief_verb())
-        self.assertEqual(True, Sentence("I think that coffee is good.").contains_belief_verb())
+        self.assertEqual(False, Sentence("I want that coffee.").contains_word_type('belief', 'verb'))
+        self.assertEqual(True, Sentence("I think that coffee is good.").contains_word_type('belief', 'verb'))
 
     def test_contains_attitude_verb(self):
-        self.assertEqual(True, Sentence("I want that coffee.").contains_attitude_verb())
-        self.assertEqual(False, Sentence("I think that coffee is good.").contains_attitude_verb())
+        self.assertEqual(True, Sentence("I want that coffee.").contains_word_type('attitude', 'verb'))
+        self.assertEqual(False, Sentence("I think that coffee is good.").contains_word_type('attitude', 'verb'))
 
     def test_contains_a_being_verb(self):
-        self.assertEqual(True, Sentence("That is some delicious coffee.").contains_a_being_verb())
-        self.assertEqual(False, Sentence("I don't want that much coffee.").contains_a_being_verb())
+        self.assertEqual(True, Sentence("That is some delicious coffee.").contains_word_type('being', 'verb'))
+        self.assertEqual(False, Sentence("I don't want that much coffee.").contains_word_type('being', 'verb'))
 
     def test_parse_with_grammar(self):
         grammar = r"""
@@ -105,7 +105,6 @@ class test_detection_functions(unittest.TestCase):
         self.assertEqual(False, detect_nonverb_beliefs(s2))
         self.assertEqual(True, detect_nonverb_attitudes(s3))
         self.assertEqual(False, detect_nonverb_beliefs(s3))
-
 
     def test_detect_intention_using_that_clauses(self):
         s4 = Sentence('He started to feel that that was enough coffee for today.')
@@ -159,13 +158,6 @@ letter.''')
         self.assertEqual(True, sentence_indicates_desire(s3))
         self.assertEqual(True, sentence_indicates_desire(s4))
         self.assertEqual(True, sentence_indicates_desire(s5))
-
-#CONSIDERING ADDING THIS NEW CLASS
-# class test_word_classifiers(unittest.TestCase):
-#     def test_identification(self):
-#         from language import wordClassifiers
-#         self.assertTrue(Word("knew", "VB").is_a(belief))
-#         self.assertTrue(Word("knew", "VB").is_a(verb))
 
 
 if __name__ == '__main__':

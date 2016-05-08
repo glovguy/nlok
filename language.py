@@ -13,34 +13,15 @@ class Word(object):
         self.tag = str(tag)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and unicode.lower(self.text) == unicode.lower(other.text))
+        return isinstance(other, self.__class__) and \
+               unicode.lower(self.text) == unicode.lower(other.text)
 
     def __str__(self):
         return self.text
 
-    def is_verb(self):
-        return self.feature_set()['verb']
-
-    def is_noun(self):
-        return self.feature_set()['noun']
-
-    def is_belief_verb(self):
-        return self.feature_set()['belief'] and self.feature_set()['verb']
-
-    def is_attitude_verb(self):
-        return self.feature_set()['attitude'] and self.feature_set()['verb']
-
-    def is_a_being_verb(self):
-        return self.feature_set()['being'] and self.feature_set()['verb']
-
-    def is_belief_nonverb(self):
-        return self.feature_set()['belief'] and not self.feature_set()['verb']
-
-    def is_attitude_nonverb(self):
-        return self.feature_set()['attitude'] and not self.feature_set()['verb']
-
-    def is_phenomenal_word(self):
-        return self.feature_set()['phenomenal']
+    def is_type(self, *features):
+        if features[0].__class__ is tuple: features = [e for tupl in features for e in tupl]
+        return False not in [self.feature_set()[f] for f in features]
 
     def feature_set(self):
         return {
@@ -48,7 +29,8 @@ class Word(object):
             'noun': self.tag[0] == 'N',
             'belief': unicode.lower(self.text) in BELIEF_WORDS,
             'attitude': unicode.lower(self.text) in ATTITUDE_WORDS,
-            'being': unicode.lower(self.text) in BEING_WORDS
+            'being': unicode.lower(self.text) in BEING_WORDS,
+            'nonverb': not self.tag[0] == 'V'
         }
 
     def __hash__(self):
@@ -66,7 +48,6 @@ class Sentence(object):
             text = eachWord[0]
             tag = eachWord[1]
             self.words.append(Word(text, tag))
-        self.chunks = []
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and self.text == other.text)
@@ -78,19 +59,11 @@ class Sentence(object):
         return self.text
 
     def contains_word(self, word):
+        if not isinstance(word, Word('text').__class__): word = Word(word)
         return True in [eachWord == word for eachWord in self.words]
 
-    def contains_belief_verb(self):
-        return True in [eachWord.is_belief_verb() for eachWord in self.words]
-
-    def contains_attitude_verb(self):
-        return True in [eachWord.is_attitude_verb() for eachWord in self.words]
-
-    def contains_a_being_verb(self):
-        return True in [eachWord.is_a_being_verb() for eachWord in self.words]
-
-    def contains_a_phenomenal_word(self):
-        return True in [eachWord.is_phenomenal_word() for eachWord in self.words]
+    def contains_word_type(self, *wordtypes):
+        return True in [eachWord.is_type(wordtypes) for eachWord in self.words]
 
     def parse_with_grammar(self, grammar):
         self.chunkedSentence = RegexpParser(grammar).parse(self.POStags)
@@ -104,11 +77,11 @@ class Sentence(object):
 
     def contains_chunk_with_belief_word(self):
         listOfAllWordsInSubtrees = self.words_in_flattened_tree()
-        return True in [x.is_belief_nonverb() or x.is_belief_verb() for x in listOfAllWordsInSubtrees]
+        return True in [x.is_type('belief') for x in listOfAllWordsInSubtrees]
 
     def contains_chunk_with_attitude_word(self):
         listOfAllWordsInSubtrees = self.words_in_flattened_tree()
-        return True in [x.is_attitude_nonverb() or x.is_attitude_verb() for x in listOfAllWordsInSubtrees]
+        return True in [x.is_type('attitude') for x in listOfAllWordsInSubtrees]
 
 
 class Passage(object):
@@ -118,7 +91,7 @@ class Passage(object):
         self.sentences = [Sentence(x.strip()) for x in sent_tokenize(text)]
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and self.text == other.text)
+        return isinstance(other, self.__class__) and self.text == other.text
 
     def __hash__(self):
         return hash(frozenset(self.text))
