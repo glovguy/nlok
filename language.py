@@ -96,34 +96,26 @@ class Sentence(object):
         self.chunkedSentence = RegexpParser(grammar).parse(self.POStags)
         return self
 
-    def contains_chunk_with_belief_word(self):
+    def words_in_flattened_tree(self):
         allSubtrees = [x for x in self.chunkedSentence if type(x) == Tree]
         flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
         listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
+        return listOfAllWordsInSubtrees
+
+    def contains_chunk_with_belief_word(self):
+        listOfAllWordsInSubtrees = self.words_in_flattened_tree()
         return True in [x.is_belief_nonverb() or x.is_belief_verb() for x in listOfAllWordsInSubtrees]
 
     def contains_chunk_with_attitude_word(self):
-        allSubtrees = [x for x in self.chunkedSentence if type(x) == Tree]
-        flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
-        listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
+        listOfAllWordsInSubtrees = self.words_in_flattened_tree()
         return True in [x.is_attitude_nonverb() or x.is_attitude_verb() for x in listOfAllWordsInSubtrees]
-
-    # def contains_chunk_with_phenomenal_word(self):
-    #     allSubtrees = [x for x in self.chunkedSentence if type(x) == Tree]
-    #     flattenedSubtrees = [x.flatten().leaves() for x in allSubtrees]
-    #     listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
-    #     return True in [x.is_phenomenal_word() for x in listOfAllWordsInSubtrees]
 
 
 class Passage(object):
     """Understands text document that is being analyzed"""
     def __init__(self, text):
         self.text = unicode(text).strip()
-        # sentence_detector = data.load('tokenizers/punkt/english.pickle')
-        # sentences=nltk.sent_tokenize(sample.decode('utf-8'))
-        # -*- coding: utf-8 -*-
         self.sentences = [Sentence(x.strip()) for x in sent_tokenize(text)]
-        # sentence_detector.tokenize(text.strip())
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__) and self.text == other.text)
