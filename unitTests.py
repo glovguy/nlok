@@ -18,6 +18,14 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
         self.assertEqual(Sentence("I want that coffee."), Sentence(u"I want that coffee."))
 
+    def test_string_conversions(self):
+        p1 = Passage("I like coffee. I also like listening to music.")
+        s1 = Sentence("I like coffee.")
+        w1 = Word("fancy")
+        self.assertEqual(str(p1), "I like coffee. I also like listening to music.")
+        self.assertEqual(str(s1), "I like coffee.")
+        self.assertEqual(str(w1), "fancy")
+
     def test_tags(self):
         self.assertTrue(Sentence("I want that coffee.").words[1].is_verb())
         self.assertEqual(Word("Coffee", 'NN').tag, 'NN')
@@ -91,12 +99,19 @@ class test_detection_functions(unittest.TestCase):
     def test_detect_nonverb_beliefs_and_attitudes(self):
         s1 = Sentence('My belief is that this coffee is the best in Manhattan.')
         s2 = Sentence('My dog is very obedient.')
-        self.assertEqual(True, detect_nonverb_beliefs_and_attitudes(s1))
-        self.assertEqual(False, detect_nonverb_beliefs_and_attitudes(s2))
+        s3 = Sentence('My desire is to become a Samana.')
+        self.assertEqual(True, detect_nonverb_beliefs(s1))
+        self.assertEqual(False, detect_nonverb_attitudes(s1))
+        self.assertEqual(False, detect_nonverb_beliefs(s2))
+        self.assertEqual(True, detect_nonverb_attitudes(s3))
+        self.assertEqual(False, detect_nonverb_beliefs(s3))
+
 
     def test_detect_intention_using_that_clauses(self):
         s4 = Sentence('He started to feel that that was enough coffee for today.')
+        s5 = Sentence('I think that you are mistaken.')
         self.assertEqual(True, detect_intention_using_that_clauses(s4))
+        self.assertEqual(True, detect_intention_using_that_clauses(s5))
 
     def test_is_sentence_intentional(self):
         s1 = Sentence('"How deaf and stupid have I been!" he thought, walking swiftly along.')
@@ -132,6 +147,25 @@ letter.''')
         self.assertTrue(s1 in p1.all_intentional_sentences())
         self.assertTrue(s2 in p1.all_intentional_sentences())
         self.assertTrue(s3 in p1.all_intentional_sentences())
+
+    def test_detect_desire(self):
+        s1 = Sentence('"How deaf and stupid have I been!" he thought, walking swiftly along.')
+        s2 = Sentence("This is a sentence that doesn't express intention.")
+        s3 = Sentence('I want this sentence to express intention..')
+        s4 = Sentence('He started to feel that that was enough coffee for today.')
+        s5 = Sentence(u'I want this sentence to express intention..')
+        self.assertEqual(False, sentence_indicates_desire(s1))
+        self.assertEqual(False, sentence_indicates_desire(s2))
+        self.assertEqual(True, sentence_indicates_desire(s3))
+        self.assertEqual(True, sentence_indicates_desire(s4))
+        self.assertEqual(True, sentence_indicates_desire(s5))
+
+#CONSIDERING ADDING THIS NEW CLASS
+# class test_word_classifiers(unittest.TestCase):
+#     def test_identification(self):
+#         from language import wordClassifiers
+#         self.assertTrue(Word("knew", "VB").is_a(belief))
+#         self.assertTrue(Word("knew", "VB").is_a(verb))
 
 
 if __name__ == '__main__':

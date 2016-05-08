@@ -4,14 +4,24 @@ from language import Word
 # -*- coding: utf-8 -*-
 
 
-def detect_nonverb_beliefs_and_attitudes(sentence):
-    ## "(PRP) (belief/attitude) is..."
+def detect_nonverb_beliefs(sentence):
+    ## "(PRP) (belief) is..."
     if sentence.contains_a_being_verb() is False: return False
     grammar = r"""
       IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
     sentence.parse_with_grammar(grammar)
-    return sentence.contains_chunk_with_belief_or_attitude_word()
+    return sentence.contains_chunk_with_belief_word()
+
+
+def detect_nonverb_attitudes(sentence):
+    ## "(PRP) (attitude) is..."
+    if sentence.contains_a_being_verb() is False: return False
+    grammar = r"""
+      IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
+    """
+    sentence.parse_with_grammar(grammar)
+    return sentence.contains_chunk_with_attitude_word()
 
 
 def detect_intention_using_that_clauses(sentence):
@@ -21,15 +31,27 @@ def detect_intention_using_that_clauses(sentence):
       ThatClause: {<VB.|VB><IN>}
     """
     sentence.parse_with_grammar(grammar)
-    return sentence.contains_chunk_with_phenomenal_word()
+    return sentence.contains_chunk_with_belief_word() or \
+        sentence.contains_chunk_with_attitude_word()
 
 
 def is_sentence_intentional(sentence):
     return sentence.contains_belief_verb() or \
         sentence.contains_attitude_verb() or \
-        detect_nonverb_beliefs_and_attitudes(sentence) or \
+        detect_nonverb_beliefs(sentence) or \
+        detect_nonverb_attitudes(sentence) or \
         detect_intention_using_that_clauses(sentence)
-    raise Exception
+
+
+def sentence_indicates_desire(sentence):
+    return sentence.contains_attitude_verb() or \
+        detect_nonverb_attitudes(sentence)
+
+
+def sentence_indicates_belief(sentence):
+    return sentence.contains_desire_verb() or \
+        detect_nonverb_beliefs(sentence) or \
+        detect_intention_using_that_clauses(sentence)
 
 
 if __name__ == '__main__':
