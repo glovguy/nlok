@@ -50,7 +50,7 @@ class Sentence(object):
             self.words.append(Word(text, tag))
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__) and self.text == other.text)
+        return isinstance(other, self.__class__) and self.text == other.text
 
     def __hash__(self):
         return hash(frozenset(self.text))
