@@ -83,6 +83,16 @@ class Sentence(object):
         listOfAllWordsInSubtrees = self.words_in_flattened_tree()
         return True in [x.is_type('attitude') for x in listOfAllWordsInSubtrees]
 
+    def feature_set(self):
+        return {
+            'contains_being_verb': self.contains_word_type('being', 'verb'),
+            'contains_that': self.contains_word('that'),
+            'contains_belief_verb': self.contains_word_type('belief', 'verb'),
+            'contains_attitude_verb': self.contains_word_type('attitude', 'verb'),
+            'contains_chunk_with_belief_word': self.contains_chunk_with_belief_word(),
+            'contains_chunk_with_attitude_word': self.contains_chunk_with_attitude_word()
+        }
+
 
 class Passage(object):
     """Understands text document that is being analyzed"""
