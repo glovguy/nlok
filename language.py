@@ -48,6 +48,7 @@ class Sentence(object):
             text = eachWord[0]
             tag = eachWord[1]
             self.words.append(Word(text, tag))
+        self.chunkedSentence = []
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.text == other.text
