@@ -102,6 +102,9 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, s1.feature_set()['contains_being_verb'])
         self.assertEqual(False, s1.feature_set()['contains_that'])
 
+    def test_contains_grammar_with_word_type(self):
+        pass
+
 
 class test_detection_functions(unittest.TestCase):
     def test_detect_nonverb_beliefs_and_attitudes(self):

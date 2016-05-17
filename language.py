@@ -84,6 +84,9 @@ class Sentence(object):
         listOfAllWordsInSubtrees = self.words_in_flattened_tree()
         return True in [x.is_type('attitude') for x in listOfAllWordsInSubtrees]
 
+    def contains_grammar_with_word_type(self, grammar, *wordtype):
+        pass
+
     def feature_set(self):
         return {
             'contains_being_verb': self.contains_word_type('being', 'verb'),
