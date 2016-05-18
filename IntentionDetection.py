@@ -7,8 +7,7 @@ def detect_nonverb_beliefs(sentence):
     grammar = r"""
       IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
-    sentence.parse_with_grammar(grammar)
-    return sentence.contains_chunk_with_belief_word()
+    return sentence.contains_grammar_with_word_type(grammar, 'belief')
 
 
 def detect_nonverb_attitudes(sentence):
@@ -17,8 +16,7 @@ def detect_nonverb_attitudes(sentence):
     grammar = r"""
       IntentionObjectPhrase: {<DT|PRP\$|NNP><JJ>*<NN><VB.|VB>}
     """
-    sentence.parse_with_grammar(grammar)
-    return sentence.contains_chunk_with_attitude_word()
+    return sentence.contains_grammar_with_word_type(grammar, 'attitude')
 
 
 def detect_intention_using_that_clauses(sentence):
@@ -27,9 +25,7 @@ def detect_intention_using_that_clauses(sentence):
     grammar = r"""
       ThatClause: {<VB.|VB><IN>}
     """
-    sentence.parse_with_grammar(grammar)
-    return sentence.contains_chunk_with_belief_word() or \
-        sentence.contains_chunk_with_attitude_word()
+    return sentence.contains_grammar_with_word_type(grammar, 'attitude', 'belief')
 
 
 def is_sentence_intentional(sentence):
