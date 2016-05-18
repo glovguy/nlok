@@ -103,7 +103,13 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(False, s1.feature_set()['contains_that'])
 
     def test_contains_grammar_with_word_type(self):
-        pass
+        grammar = r"""
+            Test: {<VB.|VB>}
+          """
+        mys = Sentence("Rapunzel let down her long golden hair.").parse_with_grammar(grammar)
+        noParse = Sentence("This sentence will not be parsed.")
+        self.assertEqual(True, mys.contains_grammar_with_word_type(grammar, 'verb'))
+        self.assertEqual(False, noParse.contains_grammar_with_word_type(grammar, 'attitude'))
 
 
 class test_detection_functions(unittest.TestCase):
