@@ -65,10 +65,8 @@ class test_language_objects(unittest.TestCase):
           NP: {<DT|PP\$>?<JJ>*<NN>}
         """
         mys = Sentence("Rapunzel let down her long golden hair.").parse_with_grammar(grammar)
-        noParse = Sentence("This sentence will not be parsed.")
         self.assertEqual(('long', 'JJ'), mys.chunkedSentence[4][0])
         self.assertEqual(Tree, type(mys.chunkedSentence[4]))
-        self.assertEqual(False, noParse.contains_chunk_with_attitude_word())
 
     def test_paragraph_init(self):
         p1 = Passage("I like coffee. I also like listening to music.")

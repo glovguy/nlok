@@ -76,14 +76,6 @@ class Sentence(object):
         listOfAllWordsInSubtrees = [Word(x) for sublist in flattenedSubtrees for x in sublist]
         return listOfAllWordsInSubtrees
 
-    def contains_chunk_with_belief_word(self):
-        listOfAllWordsInSubtrees = self.words_in_flattened_tree()
-        return True in [x.is_type('belief') for x in listOfAllWordsInSubtrees]
-
-    def contains_chunk_with_attitude_word(self):
-        listOfAllWordsInSubtrees = self.words_in_flattened_tree()
-        return True in [x.is_type('attitude') for x in listOfAllWordsInSubtrees]
-
     def contains_grammar_with_word_type(self, grammar, *wordtypes):
         self.parse_with_grammar(grammar)
         listOfAllWordsInSubtrees = self.words_in_flattened_tree()
@@ -94,9 +86,7 @@ class Sentence(object):
             'contains_being_verb': self.contains_word_type('being', 'verb'),
             'contains_that': self.contains_word('that'),
             'contains_belief_verb': self.contains_word_type('belief', 'verb'),
-            'contains_attitude_verb': self.contains_word_type('attitude', 'verb'),
-            'contains_chunk_with_belief_word': self.contains_chunk_with_belief_word(),
-            'contains_chunk_with_attitude_word': self.contains_chunk_with_attitude_word()
+            'contains_attitude_verb': self.contains_word_type('attitude', 'verb')
         }
 
 
