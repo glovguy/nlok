@@ -1,0 +1,2 @@
+nltk==3.2.1
+virtualenv==15.0.1
