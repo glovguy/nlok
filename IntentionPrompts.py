@@ -151,13 +151,10 @@ if __name__ == "__main__":
         print "And what would you like to do with this file?"
         print "1: Print this .json file"
         print "2: Pick up prompting where you last left off"
-        print "3: Count number of intentional vs. ego sentences"
         userSelected = input("\n: ")
         if userSelected is 1:
             print raw_text
         elif userSelected is 2:
             restart_prompting(rawText)
-        elif userSelected is 3:
-            exit("uh oh")
         else:
             print "Invalid entry"
