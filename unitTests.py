@@ -133,7 +133,7 @@ class test_detection_functions(unittest.TestCase):
         s3 = Sentence('I want this sentence to express intention..')
         s4 = Sentence('He started to feel that that was enough coffee for today.')
         s5 = Sentence(u'I want this sentence to express intention..')
-        self.assertEqual(True, is_sentence_intentional(s1))
+        self.assertEqual(False, is_sentence_intentional(s1))
         self.assertEqual(False, is_sentence_intentional(s2))
         self.assertEqual(True, is_sentence_intentional(s3))
         self.assertEqual(True, is_sentence_intentional(s4))

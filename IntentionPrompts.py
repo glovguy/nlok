@@ -124,6 +124,7 @@ if __name__ == "__main__":
         print "2: Give the number of sentences in the entire document"
         print "3: Print report on density of intentional statements in text"
         print "4: Manually enter intention data and save as .json file"
+        print "5: Save all intentional sentences to .txt file"
         print "0: Unit tests"
         selectedFunction = input("\n: ")
         if selectedFunction == 1:
@@ -140,6 +141,13 @@ if __name__ == "__main__":
             ## 4: User inputs to determine which sentences are intentional
             my_output = prompt_setences_and_ask_intention(fileAsLists)
             save_and_quit(my_output, fileName)
+        elif selectedFunction == 5:
+            ## 5: Save all intentional sentences to .txt file
+            OutputFile = open("Output.txt", "w")
+            sentences = Passage(rawText).all_intentional_sentences()
+            # textOut = '\n'.join([(x.text + "\n") for x in sentences])
+            [OutputFile.write(x.text + "\n") for x in sentences]
+            OutputFile.close()
         elif selectedFunction == 0:
             ## 0: Perform unit tests
             import unittest

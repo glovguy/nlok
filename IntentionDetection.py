@@ -29,9 +29,7 @@ def detect_intention_using_that_clauses(sentence):
 
 
 def is_sentence_intentional(sentence):
-    return sentence.contains_word_type('belief', 'verb') or \
-        sentence.contains_word_type('attitude', 'verb') or \
-        detect_nonverb_beliefs(sentence) or \
+    return sentence.contains_word_type('attitude', 'verb') or \
         detect_nonverb_attitudes(sentence) or \
         detect_intention_using_that_clauses(sentence)
 

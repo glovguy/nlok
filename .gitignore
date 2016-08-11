@@ -5,3 +5,4 @@ codeGraveyard.*
 TextExamples/
 *.intention
 *.idea
+ENV/
