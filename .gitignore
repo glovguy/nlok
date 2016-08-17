@@ -6,3 +6,4 @@ TextExamples/
 *.intention
 *.idea
 ENV/
+Output.txt
