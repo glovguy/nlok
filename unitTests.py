@@ -138,6 +138,8 @@ class test_detection_functions(unittest.TestCase):
         self.assertEqual(True, is_sentence_intentional(s3))
         self.assertEqual(True, is_sentence_intentional(s4))
         self.assertEqual(True, is_sentence_intentional(s5))
+        self.assertEqual(True, is_sentence_intentional(str('I want this.')))
+        self.assertEqual(True, is_sentence_intentional(u'I want this.'))
 
     def test_all_intentional_sentences(self):
         p1 = Passage(u'''
