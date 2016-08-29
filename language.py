@@ -90,7 +90,10 @@ class Sentence(object):
             'contains_being_verb': self.contains_word_type('being', 'verb'),
             'contains_that': self.contains_word('that'),
             'contains_belief_verb': self.contains_word_type('belief', 'verb'),
-            'contains_attitude_verb': self.contains_word_type('attitude', 'verb')
+            'contains_attitude_verb': self.contains_word_type('attitude', 'verb'),
+            'past_tense': self.contains_word_type('past_tense'),
+            'present_tense': self.contains_word_type('present_tense'),
+            'future_tense': self.contains_word_type('future_tense')
         }
 
 

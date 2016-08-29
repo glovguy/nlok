@@ -63,7 +63,13 @@ class test_language_objects(unittest.TestCase):
     def test_tense_feature(self):
         self.assertEqual(True, Word("wanted").is_type("past_tense"))
         self.assertEqual(False, Word("wants").is_type("past_tense"))
-        self.assertEqual(True, Word("show").is_type("present_tense"))
+        self.assertEqual(True, Word("wants").is_type("present_tense"))
+        self.assertEqual(True, Sentence("I am eating.").feature_set()['present_tense'])
+        self.assertEqual(False, Sentence("I am eating.").feature_set()['past_tense'])
+        self.assertEqual(True, Sentence("I ran earlier today.").feature_set()['past_tense'])
+        self.assertEqual(False, Sentence("I ran earlier today.").feature_set()['present_tense'])
+        self.assertEqual(True, Sentence("I will eat later after 7pm.").feature_set()['future_tense'])
+        self.assertEqual(False, Sentence("I will eat later after 7pm.").feature_set()['past_tense'])
 
     def test_parse_with_grammar(self):
         grammar = r"""
