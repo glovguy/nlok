@@ -63,7 +63,6 @@ class test_language_objects(unittest.TestCase):
     def test_tense_feature(self):
         self.assertEqual(True, Word("wanted").is_type("past_tense"))
         self.assertEqual(False, Word("wants").is_type("past_tense"))
-        print Word("wants").tag
         self.assertEqual(True, Word("show").is_type("present_tense"))
 
     def test_parse_with_grammar(self):
