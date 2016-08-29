@@ -60,6 +60,12 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Sentence("That is some delicious coffee.").contains_word_type('being', 'verb'))
         self.assertEqual(False, Sentence("I don't want that much coffee.").contains_word_type('being', 'verb'))
 
+    def test_tense_feature(self):
+        self.assertEqual(True, Word("wanted").is_type("past_tense"))
+        self.assertEqual(False, Word("wants").is_type("past_tense"))
+        print Word("wants").tag
+        self.assertEqual(True, Word("show").is_type("present_tense"))
+
     def test_parse_with_grammar(self):
         grammar = r"""
           NP: {<DT|PP\$>?<JJ>*<NN>}

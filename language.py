@@ -9,6 +9,7 @@ class Word(object):
         if type(text) == list or type(text) == tuple and tag is None:
             tag = text[1]
             text = text[0]
+        if tag is None: tag = pos_tag([text])[0][1]
         self.text = unicode(text)
         self.tag = str(tag)
 
@@ -30,7 +31,10 @@ class Word(object):
             'belief': unicode.lower(self.text) in BELIEF_WORDS,
             'attitude': unicode.lower(self.text) in ATTITUDE_WORDS,
             'being': unicode.lower(self.text) in BEING_WORDS,
-            'nonverb': not self.tag[0] == 'V'
+            'nonverb': not self.tag[0] == 'V',
+            'future_tense': self.tag in ["MD"],
+            'present_tense': self.tag in ["VBP", "VBZ","VBG"],
+            'past_tense': self.tag in ["VBD", "VBN"]
         }
 
     def __hash__(self):
