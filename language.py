@@ -1,4 +1,5 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data, sent_tokenize
+from nltk.corpus import wordnet
 import IntentionDetection
 # -*- coding: utf-8 -*-
 
@@ -23,6 +24,10 @@ class Word(object):
     def is_type(self, *features):
         if features[0].__class__ is tuple: features = [e for tupl in features for e in tupl]
         return False not in [self.feature_set()[f] for f in features]
+
+    def is_synonym_of(self, compar):
+        if compar.__class__ is Word: compar = compar.text
+        return self.text in set(w for l in wordnet.synsets(compar) for w in l.lemma_names())
 
     def feature_set(self):
         return {

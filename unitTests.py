@@ -71,6 +71,11 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Sentence("I will eat later after 7pm.").feature_set()['future_tense'])
         self.assertEqual(False, Sentence("I will eat later after 7pm.").feature_set()['past_tense'])
 
+    def test_is_synonym_of(self):
+        self.assertEqual(True, Word("believe").is_synonym_of(Word("think")))
+        self.assertEqual(True, Word("think").is_synonym_of(Word("believe")))
+        self.assertEqual(False, Word("cupcake").is_synonym_of(Word("believe")))
+
     def test_parse_with_grammar(self):
         grammar = r"""
           NP: {<DT|PP\$>?<JJ>*<NN>}
