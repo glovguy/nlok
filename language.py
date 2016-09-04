@@ -75,6 +75,9 @@ class Sentence(object):
     def contains_word_type(self, *wordtypes):
         return True in [eachWord.is_type(wordtypes) for eachWord in self.words]
 
+    def words_of_type(self, *wordtypes):
+        return [eachWord for eachWord in self.words if eachWord.is_type(wordtypes)]
+
     def parse_with_grammar(self, grammar):
         self.chunkedSentence = RegexpParser(grammar).parse(self.POStags)
         return self

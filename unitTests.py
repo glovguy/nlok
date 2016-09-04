@@ -2,6 +2,7 @@ import unittest
 from IntentionDetection import *
 from IntentionPrompts import *
 from language import *
+from significance import IntentionalSentences
 
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
@@ -70,6 +71,9 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(False, Sentence("I ran earlier today.").feature_set()['present_tense'])
         self.assertEqual(True, Sentence("I will eat later after 7pm.").feature_set()['future_tense'])
         self.assertEqual(False, Sentence("I will eat later after 7pm.").feature_set()['past_tense'])
+
+    def test_words_of_type(self):
+        self.assertEqual([Word("want")], Sentence("I want coffee.").words_of_type('verb'))
 
     def test_is_synonym_of(self):
         self.assertEqual(True, Word("believe").is_synonym_of(Word("think")))
@@ -191,6 +195,12 @@ letter.''')
         self.assertEqual(True, sentence_indicates_desire(s3))
         self.assertEqual(True, sentence_indicates_desire(s4))
         self.assertEqual(True, sentence_indicates_desire(s5))
+
+
+class test_significance_objects(unittest.TestCase):
+    def test_intensional_set_definition(self):
+        self.assertEqual(True, Sentence("I want coffee.") in IntentionalSentences)
+        self.assertEqual(False, Sentence("It's nice out.") in IntentionalSentences)
 
 
 if __name__ == '__main__':

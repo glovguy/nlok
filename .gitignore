@@ -2,7 +2,7 @@
 .DS_Store
 codeGraveyard.*
 *.komodoproject
-TextExamples/
+TextExamples
 *.intention
 *.idea
 ENV/
