@@ -1,7 +1,6 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data, sent_tokenize
 from nltk.corpus import wordnet
 import IntentionDetection
-# -*- coding: utf-8 -*-
 
 
 class Word(object):
@@ -16,7 +15,7 @@ class Word(object):
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and \
-               unicode.lower(self.text) == unicode.lower(other.text)
+            unicode.lower(self.text) == unicode.lower(other.text)
 
     def __str__(self):
         return self.text
@@ -69,7 +68,7 @@ class Sentence(object):
         return self.text
 
     def contains_word(self, word):
-        if not isinstance(word, Word('text').__class__): word = Word(word)
+        if word.__class__ is not Word: word = Word(word)
         return True in [eachWord == word for eachWord in self.words]
 
     def contains_word_type(self, *wordtypes):

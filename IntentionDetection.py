@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from language import Sentence
 
+
 def detect_nonverb_beliefs(sentence):
     ## "(PRP) (belief) is..."
     if sentence.contains_word_type('being', 'verb') is False: return False
