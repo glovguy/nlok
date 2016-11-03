@@ -1,4 +1,4 @@
-from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data, sent_tokenize
+from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
 from nltk.corpus import wordnet
 
 
@@ -36,7 +36,7 @@ class Word(object):
             'being': unicode.lower(self.text) in BEING_WORDS,
             'nonverb': not self.tag[0] == 'V',
             'future_tense': self.tag in ["MD"],
-            'present_tense': self.tag in ["VBP", "VBZ","VBG"],
+            'present_tense': self.tag in ["VBP", "VBZ", "VBG"],
             'past_tense': self.tag in ["VBD", "VBN"]
         }
 
