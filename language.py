@@ -1,6 +1,5 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, data, sent_tokenize
 from nltk.corpus import wordnet
-import IntentionDetection
 
 
 class Word(object):
@@ -119,14 +118,14 @@ class Passage(object):
     def __str__(self):
         return self.text
 
-    def all_intentional_sentences(self):
-        return [x for x in self.sentences if IntentionDetection.is_sentence_intentional(x)]
+    def all_sentences_of_type(self, sentType):
+        return [x for x in self.sentences if sentType(x)]
 
     def count_sentences(self):
         return len(self.sentences)
 
-    def intentional_sentences_density(self):
-        return [IntentionDetection.is_sentence_intentional(x) for x in self.sentences]
+    def sentence_density_of_type(self, sentType):
+        return [sentType(x) for x in self.sentences]
 
 
 BELIEF_WORDS = [

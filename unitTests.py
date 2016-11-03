@@ -2,7 +2,6 @@ import unittest
 from IntentionDetection import *
 from IntentionPrompts import *
 from language import *
-from significance import IntentionalSentences
 
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
@@ -112,13 +111,14 @@ class test_language_objects(unittest.TestCase):
          before this very day."
         This is a sentence that doesn't express intention. I want this sentence to express intention..
         He started to feel that that was enough coffee for today.""")
-        self.assertEqual(p1.intentional_sentences_density(), [True, False, False, True, True])
+        self.assertEqual(p1.sentence_density_of_type(is_sentence_intentional), [True, False, False, True, True])
 
     def test_feature_set(self):
         s1 = Sentence("It is raining today.")
         s2 = Sentence("I also like listening to music.")
         self.assertEqual(True, s1.feature_set()['contains_being_verb'])
         self.assertEqual(False, s1.feature_set()['contains_that'])
+        self.assertEqual(True, s2.feature_set()['present_tense'])
 
     def test_contains_grammar_with_word_type(self):
         grammar = r"""
@@ -180,9 +180,9 @@ He started to feel that that was enough coffee for today.
 wants to discover its meaning, he will not scorn the symbols and letters and call them deceptions,\
 coincidence, and worthless hull, but he will read them, he will study and love them, letter by\
 letter.''')
-        self.assertTrue(s1 in p1.all_intentional_sentences())
-        self.assertTrue(s2 in p1.all_intentional_sentences())
-        self.assertTrue(s3 in p1.all_intentional_sentences())
+        self.assertTrue(s1 in p1.all_sentences_of_type(is_sentence_intentional))
+        self.assertTrue(s2 in p1.all_sentences_of_type(is_sentence_intentional))
+        self.assertTrue(s3 in p1.all_sentences_of_type(is_sentence_intentional))
 
     def test_detect_desire(self):
         s1 = Sentence('"How deaf and stupid have I been!" he thought, walking swiftly along.')
@@ -197,10 +197,10 @@ letter.''')
         self.assertEqual(True, sentence_indicates_desire(s5))
 
 
-class test_significance_objects(unittest.TestCase):
-    def test_intensional_set_definition(self):
-        self.assertEqual(True, Sentence("I want coffee.") in IntentionalSentences)
-        self.assertEqual(False, Sentence("It's nice out.") in IntentionalSentences)
+# class test_significance_objects(unittest.TestCase):
+#     def test_intensional_set_definition(self):
+#         self.assertEqual(True, Sentence("I want coffee.") in IntentionalSentences)
+#         self.assertEqual(False, Sentence("It's nice out.") in IntentionalSentences)
 
 
 if __name__ == '__main__':
