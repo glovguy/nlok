@@ -2,6 +2,7 @@ import unittest
 from IntentionDetection import *
 from IntentionPrompts import *
 from language import *
+from nltk import Tree
 
 
 class test_functions_in_IntentionPrompts(unittest.TestCase):
@@ -85,7 +86,7 @@ class test_language_objects(unittest.TestCase):
         """
         mys = Sentence("Rapunzel let down her long golden hair.").parse_with_grammar(grammar)
         self.assertEqual(('long', 'JJ'), mys.chunkedSentence[4][0])
-        self.assertEqual(nltk.Tree, type(mys.chunkedSentence[4]))
+        self.assertEqual(Tree, type(mys.chunkedSentence[4]))
 
     def test_paragraph_init(self):
         p1 = Passage("I like coffee. I also like listening to music.")
