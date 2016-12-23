@@ -8,27 +8,27 @@ from language import Passage, Sentence, Word
 def save_and_quit(my_output, fileName):
     outputFileName = raw_input('what would you like to call the new filename?\n: ')
     if outputFileName == '':
-        print "assuming it is the same as input, but with '.json' appended"
+        print("assuming it is the same as input, but with '.json' appended")
         outputFileName = fileName
     elif '.json' not in outputFileName:
         outputFileName = outputFileName + '.json'
     output_file = open(outputFileName, 'w')
     json.dump(my_output, output_file)
-    print "my_output"
-    print my_output
-    print "file saved as ", outputFileName
+    print("my_output")
+    print(my_output)
+    print("file saved as ", outputFileName)
     quit('saved and quitting')
 
 
 def load_file(fileName, fileTYPE):
     import os
     import codecs
-    print "Loading..."
+    print("Loading...")
     try:
         textFile = codecs.open(fileName, "rb", encoding="utf-8")
     except:
         try:
-            print "Looking also in /TextExamples folder"
+            print("Looking also in /TextExamples folder")
             myCWD = os.getcwd()
             fileName = myCWD + "/TextExamples/" + fileName + '.' + fileTYPE
             textFile = codecs.open(fileName, "rb", encoding="utf-8")
@@ -41,7 +41,7 @@ def load_file(fileName, fileTYPE):
     else:
         raise Exception("unrecognized file type")
     textFile.close()
-    print "done \n"
+    print("done \n")
     return rawText
 
 
@@ -53,7 +53,7 @@ def determine_file_type(fileName):
     else:
         if fileName[len(str(fileName))-4] == ".":
             quit("unrecognized filetype")
-        print "No file extension, assuming it's a .txt file"
+        print("No file extension, assuming it's a .txt file")
         fileTYPE = 'txt'
     return fileTYPE
 
@@ -62,7 +62,7 @@ def prompt_setences_and_ask_intention(raw_text):
     #########################
     ## Cycle through lines ##
     #########################
-    print "Okay, let's begin...\n-----\n\n"
+    print("Okay, let's begin...\n-----\n\n")
     sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
     my_output = []
     for eachParagraph in raw_text:
@@ -74,28 +74,28 @@ def prompt_setences_and_ask_intention(raw_text):
             tally = 1
             for eachSentence in sentenceTokens:
                 if tally in selectedSentences:
-                    print "  * " + str(tally) + ":  " + eachSentence
+                    print("  * " + str(tally) + ":  " + eachSentence)
                 else:
-                    print "    " + str(tally) + ":  " + eachSentence
+                    print("    " + str(tally) + ":  " + eachSentence)
                 tally += 1
             userInput = raw_input('''\n\nAny intentional sentences?
                 Enter line number
                 0 to save and quit
                 or hit return to move on:''')
             if userInput == '':
-                print "okay, none\n\n---\n"
+                print("okay, none\n\n---\n")
                 break
             elif int(userInput) == 0:
                 resp = raw_input('save and quit? y/n\n: ')
                 if resp == "y":
                     return my_output
             elif int(userInput) == 0:
-                print "undefined"
+                print("undefined")
             elif int(userInput) > 0 and int(userInput) <= tally and not int(userInput) in selectedSentences:
                 selectedSentences.append(int(userInput))
             else:
-                print "be nice.."
-            print "\n\n"
+                print("be nice..")
+            print("\n\n")
         i = 1  # user input is 1-indexed, so this is as well
         for eachSentence in sentenceTokens:
             if i in selectedSentences:
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     ################################
     fileName = raw_input('File Name: ')
     if fileName == "":
-        print "no filename given, using exampleText.txt as default"
+        print("no filename given, using exampleText.txt as default")
         fileName = 'exampleText'
         file_type = 'txt'
     else:
@@ -119,24 +119,24 @@ if __name__ == "__main__":
     fileAsLists = load_file(fileName, file_type)
     rawText = " ".join(fileAsLists)
     if file_type == 'txt':
-        print "And what would you like to do with this file?"
-        print "1: Print all intentional sentences"
-        print "2: Give the number of sentences in the entire document"
-        print "3: Print report on density of intentional statements in text"
-        print "4: Manually enter intention data and save as .json file"
-        print "5: Save all intentional sentences to .txt file"
-        print "0: Unit tests"
+        print("And what would you like to do with this file?")
+        print("1: Print all intentional sentences")
+        print("2: Give the number of sentences in the entire document")
+        print("3: Print report on density of intentional statements in text")
+        print("4: Manually enter intention data and save as .json file")
+        print("5: Save all intentional sentences to .txt file")
+        print("0: Unit tests")
         selectedFunction = input("\n: ")
         if selectedFunction == 1:
-            ## 1: Print all intentional sentences
+            ## 1: print(all intentional sentences)
             sentences = Passage(rawText).all_intentional_sentences()
-            print [x.text for x in sentences]
+            print([x.text for x in sentences])
         elif selectedFunction == 2:
             ## 2: Total number of sentences in the entire document
-            print Passage(rawText).count_sentences()
+            print(Passage(rawText).count_sentences())
         elif selectedFunction == 3:
-            ## 3: Print report on density of intentional statements in text
-            print Passage(rawText).intentional_sentences_density()
+            ## 3: print(report on density of intentional statements in text)
+            print(Passage(rawText).intentional_sentences_density())
         elif file_type == "txt" and selectedFunction == 4:
             ## 4: User inputs to determine which sentences are intentional
             my_output = prompt_setences_and_ask_intention(fileAsLists)
@@ -154,15 +154,15 @@ if __name__ == "__main__":
             from unitTests import *
             unittest.main()
         else:
-            print "Invalid entry"
+            print("Invalid entry")
     elif file_type == "intention":
-        print "And what would you like to do with this file?"
-        print "1: Print this .json file"
-        print "2: Pick up prompting where you last left off"
+        print("And what would you like to do with this file?")
+        print("1: Print this .json file")
+        print("2: Pick up prompting where you last left off")
         userSelected = input("\n: ")
         if userSelected is 1:
-            print raw_text
+            print(raw_text)
         elif userSelected is 2:
             restart_prompting(rawText)
         else:
-            print "Invalid entry"
+            print("Invalid entry")
