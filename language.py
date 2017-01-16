@@ -1,5 +1,7 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
 from nltk.corpus import wordnet
+import spacy
+from proposition import *
 
 
 class Word(object):
@@ -126,6 +128,37 @@ class Passage(object):
 
     def sentence_density_of_type(self, sentType):
         return [sentType(x) for x in self.sentences]
+
+
+# I haven't yet decided if I am going "all in" on using spacy instead of NLTK, 
+# so in the meantime there will be code duplication
+def load_spacy():
+    if 'nlp' not in globals():
+        from time import time
+        print("Loading Spacy parser...")
+        t1 = time()
+        global nlp
+        nlp = spacy.load('en')
+        t2 = time()
+        print("Done in " + str(t2-t1) + " seconds")
+    return nlp
+
+
+def tense(text):
+    if type(text) is spacy.tokens.doc.Doc:
+        text = text.sents.next()
+    elif type(text) is unicode or type(text) is str:
+        text = nlp(unicode(text)).sents.next()
+    tag = text.root.tag_
+    if tag == 'VBD' or tag == 'VBN':
+        tense = 'past'
+    elif tag == 'VBP' or tag == 'VBZ' or tag == 'VBG':
+        tense = 'present'
+    else:
+        aux = [t for t in text if t.tag_ == 'MD']
+        if True in [text.root.is_ancestor(t) for t in aux]:
+            tense = 'future'
+    return tense
 
 
 BELIEF_WORDS = [

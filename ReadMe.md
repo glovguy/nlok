@@ -4,20 +4,6 @@ The goal behind this project is to see if I can build a program that will recogn
 
 The aim is not to digest or understand the sentences, its goal is simply to label them.
 
-**Run `main.py` and give it a .txt file** in order to:
-1. Print all intentional sentences,
-2. Count the number of intentional sentences,
-3. Return an array noting the density of intentional statements in all sentences of the text.
-
-**Functions in IntentionDetection.py**
-```python
->>> import IntentionDetection
->>> IntentionDetection.DetectIntentions("I want to get some coffee.")
-'I WANT to get some coffee.'
->>> IntentionDetection.countSentences("I want some coffee. It is not raining today.")
-2
-```
-
 ## Intentional sentences
 
 Intentional sentences can be roughly thought of as causal descriptions of social phenomena. They are part of our understanding of other minds, or more specifically, about willfulness. (This is not to be confused with Bretano’s “intentionality”, which describes the nature of our mental states to be “directed at” some object.)
@@ -30,7 +16,17 @@ There are three types of sentences that are grouped under the category of intent
 
 This script aims at detecting sentences of the second type, [though the exact distinction between these three types is up for philosophical debate.](http://plato.stanford.edu/entries/intention/)
 
+## Architecture Layers
 
+The architecture is based on the divisions Searle makes in _Speech Acts_.
+
+1. *Linguistic facts / utterance acts:* Facts about text itself. E.g. words, morphemes, sentences, etc.
+..* language.py
+2. *Propositional acts:* The content of what a speech act does. E.g. referring and predicating.
+..* proposition.py
+3. *Illocutionary acts:* What a speech act does. E.g. stating, questioning, commanding, promising, etc.
+..* illocutionary.py
+4. *Perlocutionary acts:* The effect that a speech act is meant to have. E.g. scaring, startling, annoying, etc.
 
 ## What IntentionDetection.py looks for
 
@@ -51,15 +47,3 @@ An example of attitude:
 In this case, your intention is perfectly well translated by explaining what your attitude is. It’s not necessary to explain that you believe your action will accomplish that goal.
 
 So, all we have to do is write a program that recognizes these two sorts of sentences.
-
-### Statements of belief
-
-This appears to be the easier one. [If the statement is about belief, it should have a verb in it that is a rough synonym for belief: believe, know, perceive, notice, remember, and other synonyms and all conjugations of these verbs.](http://en.wikipedia.org/wiki/Propositional_attitude)
-
-### Statements of attitude
-
-Similar to the previous section, the program also checks all of the verbs in the passage if they match a list of ‘attitude’ verbs. For example: “want”, “wish”, “desire”, “hope”, “care”, “like”, and synonyms.
-
-### Detecting non-verb Constructions
-
-Believe it or not, most statements of intention will be caught by the above two simple rules.
