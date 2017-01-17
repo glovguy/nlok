@@ -1,7 +1,6 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
 from nltk.corpus import wordnet
 import spacy
-from proposition import *
 
 
 class Word(object):
