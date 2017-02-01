@@ -24,9 +24,12 @@ class Word(object):
         if features[0].__class__ is tuple: features = [e for tupl in features for e in tupl]
         return False not in [self.feature_set()[f] for f in features]
 
-    def is_synonym_of(self, compar):
-        if compar.__class__ is Word: compar = compar.text
-        return self.text in set(w for l in wordnet.synsets(compar) for w in l.lemma_names())
+    def is_synonym_of(self, other):
+        if other.__class__ is not Word: other = Word(other)
+        # Need to convert tag to wordnet format
+        wntag = other.tag[0].lower()
+        if wntag == 'j': wntag = 'a'
+        return self.text in set(w for l in wordnet.synsets(other.text, pos=wntag) for w in l.lemma_names())
 
     def feature_set(self):
         return {
@@ -143,11 +146,17 @@ def load_spacy():
     return nlp
 
 
-def tense(text):
+def make_span(text):
+    nlp = load_spacy()
     if type(text) is spacy.tokens.doc.Doc:
         text = text.sents.next()
     elif type(text) is unicode or type(text) is str:
         text = nlp(unicode(text)).sents.next()
+    return text
+
+
+def tense(text):
+    text = make_span(text)
     tag = text.root.tag_
     if tag == 'VBD' or tag == 'VBN':
         tense = 'past'
@@ -158,6 +167,19 @@ def tense(text):
         if True in [text.root.is_ancestor(t) for t in aux]:
             tense = 'future'
     return tense
+
+
+def determine_frame(text):
+    from nltk.corpus import verbnet as vn
+    from pattern.en import conjugate, INFINITIVE
+    text = make_span(text)
+    root = conjugate(text.root.text.lower(), tense=INFINITIVE)
+    vnclasses = vn.classids(lemma=root)
+    if len(vnclasses) == 1:
+        return vnclasses[0]
+    else:
+        print(vnclasses)
+        return False
 
 
 BELIEF_WORDS = [

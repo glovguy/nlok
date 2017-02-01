@@ -4,6 +4,7 @@ from IntentionPrompts import *
 from language import *
 from nltk import Tree
 from illocutionary import *
+from nltk.corpus import verbnet as vn
 
 
 class test_statements(unittest.TestCase):
@@ -121,8 +122,8 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual([Word("want")], Sentence("I want coffee.").words_of_type('verb'))
 
     def test_is_synonym_of(self):
-        self.assertEqual(True, Word("believe").is_synonym_of(Word("think")))
-        self.assertEqual(True, Word("think").is_synonym_of(Word("believe")))
+        self.assertEqual(True, Word("believe", tag="VB").is_synonym_of(Word("think", tag="VB")))
+        self.assertEqual(True, Word("think", tag="VB").is_synonym_of(Word("believe", tag="VB")))
         self.assertEqual(False, Word("cupcake").is_synonym_of(Word("believe")))
 
     def test_parse_with_grammar(self):
@@ -174,6 +175,16 @@ class test_language_objects(unittest.TestCase):
         noParse = Sentence("This sentence will not be parsed.")
         self.assertEqual(True, mys.contains_grammar_with_word_type(grammar, 'verb'))
         self.assertEqual(False, noParse.contains_grammar_with_word_type(grammar, 'attitude'))
+
+
+class test_language_spacy_mixins(unittest.TestCase):
+    def test_determine_frame(self):
+        self.assertEqual(u'substance_emission-43.4', determine_frame("I shed those tears in vain"))
+
+    def test_tense(self):
+        self.assertEqual('present', tense("I am eating."))
+        self.assertEqual('past', tense("I ran earlier today."))
+        self.assertEqual('future', tense("I will eat later after 7pm."))
 
 
 class test_detection_functions(unittest.TestCase):
