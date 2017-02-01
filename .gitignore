@@ -1,0 +1,9 @@
+*.pyc
+.DS_Store
+codeGraveyard.*
+*.komodoproject
+TextExamples
+*.intention
+*.idea
+ENV/
+Output.txt
