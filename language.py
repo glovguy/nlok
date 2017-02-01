@@ -1,6 +1,5 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
 from nltk.corpus import wordnet
-import spacy
 
 
 class Word(object):
@@ -10,12 +9,12 @@ class Word(object):
             tag = text[1]
             text = text[0]
         if tag is None: tag = pos_tag([text])[0][1]
-        self.text = unicode(text)
+        self.text = text
         self.tag = str(tag)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and \
-            unicode.lower(self.text) == unicode.lower(other.text)
+            str.lower(self.text) == str.lower(other.text)
 
     def __str__(self):
         return self.text
@@ -35,9 +34,9 @@ class Word(object):
         return {
             'verb': self.tag[0] == 'V',
             'noun': self.tag[0] == 'N',
-            'belief': unicode.lower(self.text) in BELIEF_WORDS,
-            'attitude': unicode.lower(self.text) in ATTITUDE_WORDS,
-            'being': unicode.lower(self.text) in BEING_WORDS,
+            'belief': str.lower(self.text) in BELIEF_WORDS,
+            'attitude': str.lower(self.text) in ATTITUDE_WORDS,
+            'being': str.lower(self.text) in BEING_WORDS,
             'nonverb': not self.tag[0] == 'V',
             'future_tense': self.tag in ["MD"],
             'present_tense': self.tag in ["VBP", "VBZ", "VBG"],
@@ -51,7 +50,7 @@ class Word(object):
 class Sentence(object):
     """Understands series of words that forms a complete thought"""
     def __init__(self, text):
-        self.text = unicode(text).strip()
+        self.text = str(text).strip()
         tokenList = word_tokenize(text)
         self.POStags = pos_tag(tokenList)
         self.words = []
@@ -110,7 +109,7 @@ class Sentence(object):
 class Passage(object):
     """Understands text document that is being analyzed"""
     def __init__(self, text):
-        self.text = unicode(text).strip()
+        self.text = str(text).strip()
         self.sentences = [Sentence(x.strip()) for x in sent_tokenize(text)]
 
     def __eq__(self, other):

@@ -9,7 +9,7 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(Word("Coffee", 'NN'), Word("Coffee", 'NN'))
         self.assertEqual(Sentence("I want that coffee.").words[3], Word("coffee", 'NN'))
         self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
-        self.assertEqual(Sentence("I want that coffee."), Sentence(u"I want that coffee."))
+        self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
 
     def test_string_conversions(self):
         p1 = Passage("I like coffee. I also like listening to music.")
@@ -22,7 +22,7 @@ class test_language_objects(unittest.TestCase):
     def test_tags(self):
         self.assertTrue(Sentence("I want that coffee.").words[1].is_type('verb'))
         self.assertEqual(Word("Coffee", 'NN').tag, 'NN')
-        self.assertEqual(Word(u"Coffee", u'NN').tag, u'NN')
+        self.assertEqual(Word("Coffee", 'NN').tag, 'NN')
 
     def test_word_verb_tests(self):
         self.assertEqual(False, Word("Coffee", 'NN').is_type('belief', 'verb'))
@@ -31,7 +31,7 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Word('think', 'VBP').is_type('belief', 'verb'))
         self.assertEqual(False, Word('think', 'VBP').is_type('attitude', 'verb'))
         self.assertEqual(False, Word('coffee', 'NN').is_type('attitude', 'verb'))
-        self.assertEqual(True, Word(u'think', u'VBP').is_type('belief', 'verb'))
+        self.assertEqual(True, Word('think', 'VBP').is_type('belief', 'verb'))
 
     def test_word_nonverb_tests(self):
         self.assertEqual(False, Word("Coffee", 'NN').is_type('belief', 'nonverb'))
