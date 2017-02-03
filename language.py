@@ -26,9 +26,9 @@ class Word(object):
     def is_synonym_of(self, other):
         if other.__class__ is not Word: other = Word(other)
         # Need to convert tag to wordnet format
-        wntag = other.tag[0].lower()
+        wntag = self.tag[0].lower()
         if wntag == 'j': wntag = 'a'
-        return self.text in set(w for l in wordnet.synsets(other.text, pos=wntag) for w in l.lemma_names())
+        return other.text in set(w for l in wordnet.synsets(self.text, pos=wntag) for w in l.lemma_names())
 
     def feature_set(self):
         return {
