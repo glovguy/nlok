@@ -24,11 +24,11 @@ class Word(object):
         return False not in [self.feature_set()[f] for f in features]
 
     def is_synonym_of(self, other):
-        if other.__class__ is not Word: other = Word(other)
+        if other.__class__ is Word: other = other.text
         # Need to convert tag to wordnet format
         wntag = self.tag[0].lower()
         if wntag == 'j': wntag = 'a'
-        return other.text in set(w for l in wordnet.synsets(self.text, pos=wntag) for w in l.lemma_names())
+        return other in set(w for l in wordnet.synsets(self.text, pos=wntag) for w in l.lemma_names())
 
     def feature_set(self):
         return {
