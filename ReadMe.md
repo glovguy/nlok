@@ -14,7 +14,8 @@ I've added more as I needed things. For more info, please check out the code and
 
 ### Example
 
-```>>> from language import *
+```python
+>>> from language import *
 >>> mys = Sentence("I wish I had some coffee.")
 >>> mys.feature_set()
 {'present_tense': True, 'future_tense': False, 'contains_that': False, 'past_tense': True, 'contains_being_verb': False, 'contains_attitude_verb': True, 'contains_belief_verb': False}
@@ -22,4 +23,5 @@ I've added more as I needed things. For more info, please check out the code and
 >>> myw.feature_set()
 {'being': False, 'future_tense': False, 'noun': False, 'belief': False, 'attitude': True, 'past_tense': False, 'verb': True, 'present_tense': True, 'nonverb': False}
 >>> myw.is_synonym_of("want")  # uses wordnet to determine synonyms
-True```
+True
+```
