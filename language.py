@@ -1,5 +1,6 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
 from nltk.corpus import wordnet
+from pattern.en import mood
 
 
 class Word(object):
@@ -25,10 +26,11 @@ class Word(object):
 
     def is_synonym_of(self, other):
         if other.__class__ is Word: other = other.text
-        # Need to convert tag to wordnet format
+        # converts Penn Treebank tag to wordnet tag
         wntag = self.tag[0].lower()
         if wntag == 'j': wntag = 'a'
         return other in set(w for l in wordnet.synsets(self.text, pos=wntag) for w in l.lemma_names())
+
 
     def feature_set(self):
         return {
@@ -38,9 +40,9 @@ class Word(object):
             'attitude': str.lower(self.text) in ATTITUDE_WORDS,
             'being': str.lower(self.text) in BEING_WORDS,
             'nonverb': not self.tag[0] == 'V',
-            'future_tense': self.tag in ["MD"],
+            'modal': self.tag in ["MD"],
             'present_tense': self.tag in ["VBP", "VBZ", "VBG"],
-            'past_tense': self.tag in ["VBD", "VBN"]
+            'past_tense': self.tag in ["VBD", "VBN"],
         }
 
     def __hash__(self):
@@ -59,6 +61,7 @@ class Sentence(object):
             tag = eachWord[1]
             self.words.append(Word(text, tag))
         self.chunkedSentence = []
+        self.mood = mood(self.text)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.text == other.text
@@ -102,7 +105,11 @@ class Sentence(object):
             'contains_attitude_verb': self.contains_word_type('attitude', 'verb'),
             'past_tense': self.contains_word_type('past_tense'),
             'present_tense': self.contains_word_type('present_tense'),
-            'future_tense': self.contains_word_type('future_tense')
+            'future_tense': self.contains_word_type('modal'),
+            'indicative_mood': self.mood is 'indicative',
+            'imperative_mood': self.mood is 'imperative',
+            'conditional_mood': self.mood is 'conditional',
+            'subjunctive_mood': self.mood is 'subjunctive',
         }
 
 

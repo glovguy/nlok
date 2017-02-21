@@ -112,6 +112,18 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, mys.contains_grammar_with_word_type(grammar, 'verb'))
         self.assertEqual(False, noParse.contains_grammar_with_word_type(grammar, 'attitude'))
 
+    # Uses pattern to add grammatical mood to feature set
+    def test_sentence_mood_features(self):
+        s1 = Sentence("Robert wants some coffee after that meeting.")
+        s2 = Sentence("Call her tomorrow.")
+        s3 = Sentence("I wish that I were a fast runner.")
+        s4 = Sentence("If I feel well, I will sing.")
+        self.assertEqual(True, s1.feature_set()['indicative_mood'])
+        self.assertEqual(True, s2.feature_set()['imperative_mood'])
+        self.assertEqual(False, s2.feature_set()['indicative_mood'])
+        self.assertEqual(True, s3.feature_set()['subjunctive_mood'])
+        self.assertEqual(True, s4.feature_set()['conditional_mood'])
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=1)
