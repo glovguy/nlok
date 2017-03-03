@@ -3,3 +3,4 @@ nltk==3.2.2
 packaging==16.8
 pyparsing==2.1.10
 six==1.10.0
+coverage==4.3.4

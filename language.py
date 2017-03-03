@@ -119,12 +119,6 @@ class Passage(object):
         self.text = str(text).strip()
         self.sentences = [Sentence(x.strip()) for x in sent_tokenize(text)]
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.text == other.text
-
-    def __hash__(self):
-        return hash(frozenset(self.text))
-
     def __str__(self):
         return self.text
 

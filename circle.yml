@@ -1,0 +1,26 @@
+## Customize the test machine
+machine:
+
+  # Version of ruby to use
+  python:
+    version:
+      3.5.2
+
+## Customize dependencies
+dependencies:
+  pre:
+    - pip3 install -r requirements.txt
+    - python3 setup.py
+
+test:
+  override:
+    - python3 unitTests.py
+    - coverage run unitTests.py
+    - coverage html --include language.py
+
+## Customize deployment commands
+deployment:
+  production:
+    branch: master
+    heroku:
+      appname: evening-meadow-96623

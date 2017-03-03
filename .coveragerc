@@ -1,0 +1,9 @@
+# .coveragerc to control coverage.py
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    if __name__ == .__main__.:
+
+[html]
+directory = coverage_html_report
