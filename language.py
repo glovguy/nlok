@@ -1,6 +1,7 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
-from nltk.corpus import wordnet
 from pattern.en import mood
+from nltk.corpus import wordnet
+from WordnetAdaptor import WnSynonyms
 
 
 class Word(object):
@@ -25,12 +26,9 @@ class Word(object):
         return False not in [self.feature_set()[f] for f in features]
 
     def is_synonym_of(self, other):
-        if other.__class__ is Word: other = other.text
-        # converts Penn Treebank tag to wordnet tag
-        wntag = self.tag[0].lower()
-        if wntag == 'j': wntag = 'a'
-        return other in set(w for l in wordnet.synsets(self.text, pos=wntag) for w in l.lemma_names())
-
+        if other.__class__ is not Word: other = Word(other)
+        synonyms = WnSynonyms(self)
+        return other.text in synonyms
 
     def feature_set(self):
         return {
@@ -132,7 +130,7 @@ class Passage(object):
         return [sentType(x) for x in self.sentences]
 
 
-BELIEF_WORDS = [
+BELIEF_WORDS = set([
     "believe", "believes", "believed", "believing",
     "know", "knows", "knew", "knowing", "perceive",
     "perceives", "perceive", "perceiving", "notice",
@@ -150,9 +148,9 @@ BELIEF_WORDS = [
     "supposition", "conclusion", "conclusions",
     "understanding", "judgment", "doubt", "doubts",
     "thought", "think", "thought"
-]
+])
 
-ATTITUDE_WORDS = [
+ATTITUDE_WORDS = set([
     "want", "wanted", "wants", "wish",
     "wishes", "wished", "consider", "considers",
     "considered", "desire", "desires", "desired", "hope",
@@ -162,9 +160,9 @@ ATTITUDE_WORDS = [
     "desire", "desires", "wants", "want", "wish", "wishes",
     "hope", "hopes", "aspirations", "aspiration", "fancy",
     "fancies", "care", "cares", "feel", "feels", "felt"
-]
+])
 
-BEING_WORDS = ["is", "was", "were", "are"]
+BEING_WORDS = set(["is", "was", "were", "are"])
 
 
 if __name__ == '__main__':

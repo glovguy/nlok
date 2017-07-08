@@ -1,5 +1,6 @@
 import unittest
 from language import *
+from invariants.tense import *
 from nltk import Tree
 from nltk.corpus import verbnet as vn
 
@@ -71,6 +72,10 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Word("believe", tag="VB").is_synonym_of(Word("think", tag="VB")))
         self.assertEqual(True, Word("think", tag="VB").is_synonym_of(Word("believe", tag="VB")))
         self.assertEqual(False, Word("cupcake").is_synonym_of(Word("believe")))
+
+    # def test_is_synonym_of_checks_pos(self):
+    #     self.assertEqual(False, Word("believe", tag="VB").is_synonym_of(Word("think", tag="NN")))
+    #     self.assertEqual(True, Word("believe", tag="VB").is_synonym_of(Word("think")))
 
     def test_parse_with_grammar(self):
         grammar = r"""
