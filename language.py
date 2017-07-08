@@ -18,6 +18,9 @@ class Word(object):
         return isinstance(other, self.__class__) and \
             str.lower(self.text) == str.lower(other.text)
 
+    def __hash__(self):
+        return hash(frozenset(self.text))
+
     def __str__(self):
         return self.text
 
@@ -27,6 +30,7 @@ class Word(object):
 
     def is_synonym_of(self, other):
         if other.__class__ is not Word: other = Word(other)
+        if self.tag != other.tag: return False
         synonyms = WnSynonyms(self)
         return other.text in synonyms
 
@@ -42,9 +46,6 @@ class Word(object):
             'present_tense': self.tag in ["VBP", "VBZ", "VBG"],
             'past_tense': self.tag in ["VBD", "VBN"],
         }
-
-    def __hash__(self):
-        return hash(frozenset(self.text))
 
 
 class Sentence(object):

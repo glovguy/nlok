@@ -7,10 +7,16 @@ from nltk.corpus import verbnet as vn
 
 class test_language_objects(unittest.TestCase):
     def test_comparisons(self):
+        s1 = Sentence("I want that coffee.")
         self.assertEqual(Word("Coffee", 'NN'), Word("Coffee", 'NN'))
-        self.assertEqual(Sentence("I want that coffee.").words[3], Word("coffee", 'NN'))
-        self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
-        self.assertEqual(Sentence("I want that coffee."), Sentence("I want that coffee."))
+        self.assertEqual(s1.words[3], Word("coffee", 'NN'))
+        self.assertEqual(s1, Sentence("I want that coffee."))
+
+    def test_hash_equality(self):
+        s1 = Sentence("I want that coffee.")
+        self.assertEqual(Word("Coffee", 'NN').__hash__(), Word("Coffee", 'NN').__hash__())
+        self.assertEqual(s1.words[3].__hash__(), Word("coffee", 'NN').__hash__())
+        self.assertEqual(s1.__hash__(), Sentence("I want that coffee.").__hash__())
 
     def test_string_conversions(self):
         p1 = Passage("I like coffee. I also like listening to music.")
@@ -73,9 +79,9 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Word("think", tag="VB").is_synonym_of(Word("believe", tag="VB")))
         self.assertEqual(False, Word("cupcake").is_synonym_of(Word("believe")))
 
-    # def test_is_synonym_of_checks_pos(self):
-    #     self.assertEqual(False, Word("believe", tag="VB").is_synonym_of(Word("think", tag="NN")))
-    #     self.assertEqual(True, Word("believe", tag="VB").is_synonym_of(Word("think")))
+    def test_is_synonym_of_checks_pos(self):
+        self.assertEqual(False, Word("believe", tag="VB").is_synonym_of(Word("think", tag="NN")))
+        self.assertEqual(True, Word("believe", tag="VB").is_synonym_of(Word("think", tag="VB")))
 
     def test_parse_with_grammar(self):
         grammar = r"""
