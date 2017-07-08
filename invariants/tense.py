@@ -1,39 +1,54 @@
+import sys
 from language import Sentence, Word
 
-def Tense(word):
+def tense(word):
     return {
         word.tag in ["VBD", "VBN"]: PastTense,
         word.tag in ["VBP", "VBZ", "VBG"]: PresentTense,
         }.get(True, None)
 
-def ModalVerb(word):
+def modalVerb(word):
     return word.tag == "MD"
 
-def VerbTense(sent):
+def verbTense(sent):
     return {
-        PastTense in [w.Tense() for w in sent.words]: PastTense,
-        PresentTense in [w.Tense() for w in sent.words]: PresentTense,
-        True in [w.ModalVerb() for w in sent.words]: FutureTense,
+        PastTense in [w.tense() for w in sent.words]: PastTense,
+        PresentTense in [w.tense() for w in sent.words]: PresentTense,
+        True in [w.modalVerb() for w in sent.words]: FutureTense,
         }.get(True, None)
 
 
-class TenseBase(object):
+class WordTenseBase(object):
     pass
 
-class PastTense(TenseBase):
+class PastTense(WordTenseBase):
     name = 'past'
 
-class PresentTense(TenseBase):
+class PresentTense(WordTenseBase):
     name = 'present'
 
-class FutureTense(TenseBase):
+class FutureTense(WordTenseBase):
     name = 'future'
+
+wordInvariants = [tense, modalVerb]
+
+class SentenceTenseBase(object):
+    pass
+
+class PastTense(SentenceTenseBase):
+    name = 'past'
+
+class PresentTense(SentenceTenseBase):
+    name = 'present'
+
+class FutureTense(SentenceTenseBase):
+    name = 'future'
+
+sentInvariants = [verbTense]
 
 
 if __name__ != "__main__":
-    wordInvariants = [Tense, ModalVerb]
     for inv in wordInvariants:
         setattr(Word, inv.__name__, inv)
-    sentInvariants = [VerbTense]
     for inv in sentInvariants:
         setattr(Sentence, inv.__name__, inv)

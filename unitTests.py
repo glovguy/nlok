@@ -1,6 +1,7 @@
 import unittest
 from language import *
 from invariants.tense import *
+from invariants.GrammaticalMood import *
 from nltk import Tree
 from nltk.corpus import verbnet as vn
 
@@ -60,17 +61,6 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, Sentence("That is some delicious coffee.").contains_word_type('being', 'verb'))
         self.assertEqual(False, Sentence("I don't want that much coffee.").contains_word_type('being', 'verb'))
 
-    def test_tense_feature(self):
-        self.assertEqual(True, Word("wanted").is_type("past_tense"))
-        self.assertEqual(False, Word("wants").is_type("past_tense"))
-        self.assertEqual(True, Word("wants").is_type("present_tense"))
-        self.assertEqual(True, Sentence("I am eating.").feature_set()['present_tense'])
-        self.assertEqual(False, Sentence("I am eating.").feature_set()['past_tense'])
-        self.assertEqual(True, Sentence("I ran earlier today.").feature_set()['past_tense'])
-        self.assertEqual(False, Sentence("I ran earlier today.").feature_set()['present_tense'])
-        self.assertEqual(True, Sentence("I will eat later after 7pm.").feature_set()['future_tense'])
-        self.assertEqual(False, Sentence("I will eat later after 7pm.").feature_set()['past_tense'])
-
     def test_words_of_type(self):
         self.assertEqual([Word("want")], Sentence("I want coffee.").words_of_type('verb'))
 
@@ -112,7 +102,6 @@ class test_language_objects(unittest.TestCase):
         s2 = Sentence("I also like listening to music.")
         self.assertEqual(True, s1.feature_set()['contains_being_verb'])
         self.assertEqual(False, s1.feature_set()['contains_that'])
-        self.assertEqual(True, s2.feature_set()['present_tense'])
 
     def test_contains_grammar_with_word_type(self):
         grammar = r"""
@@ -123,28 +112,32 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, mys.contains_grammar_with_word_type(grammar, 'verb'))
         self.assertEqual(False, noParse.contains_grammar_with_word_type(grammar, 'attitude'))
 
+class test_invariants(unittest.TestCase):
+    def test_word_tense(self):
+        self.assertEqual(Word("wanted").tense(), PastTense)
+        self.assertNotEqual(Word("wants").tense(), PastTense)
+        self.assertEqual(Word("wants").tense(), PresentTense)
+        self.assertEqual(Word("will").modalVerb(), True)
+
+    def test_sentence_tense(self):
+        self.assertEqual(Sentence("I am eating.").verbTense(), PresentTense)
+        self.assertNotEqual(Sentence("I am eating.").verbTense(), PastTense)
+        self.assertEqual(Sentence("I ran earlier today.").verbTense(), PastTense)
+        self.assertNotEqual(Sentence("I ran earlier today.").verbTense(), PresentTense)
+        self.assertEqual(Sentence("I will eat later after 7pm.").verbTense(), FutureTense)
+        self.assertNotEqual(Sentence("I will eat later after 7pm.").verbTense(), PastTense)
+
     # Uses pattern to add grammatical mood to feature set
     def test_sentence_mood_features(self):
         s1 = Sentence("Robert wants some coffee after that meeting.")
         s2 = Sentence("Call her tomorrow.")
         s3 = Sentence("I wish that I were a fast runner.")
         s4 = Sentence("If I feel well, I will sing.")
-        self.assertEqual(True, s1.feature_set()['indicative_mood'])
-        self.assertEqual(True, s2.feature_set()['imperative_mood'])
-        self.assertEqual(False, s2.feature_set()['indicative_mood'])
-        self.assertEqual(True, s3.feature_set()['subjunctive_mood'])
-        self.assertEqual(True, s4.feature_set()['conditional_mood'])
-
-class test_invariants(unittest.TestCase):
-    def test_tense(self):
-        self.assertEqual(Word("wanted").Tense(), PastTense)
-        self.assertEqual(Word("wants").Tense(), PresentTense)
-        self.assertEqual(Word("will").ModalVerb(), True)
-
-    def test_sentent_tense(self):
-        self.assertEqual(Sentence("I am eating.").VerbTense(), PresentTense)
-        self.assertEqual(Sentence("I ran earlier today.").VerbTense(), PastTense)
-        self.assertEqual(Sentence("I will eat later after 7pm.").VerbTense(), FutureTense)
+        self.assertEqual(s1.mood(), IndicativeMood)
+        self.assertEqual(s2.mood(), ImperativeMood)
+        self.assertNotEqual(s2.mood(), IndicativeMood)
+        self.assertEqual(s3.mood(), SubjunctiveMood)
+        self.assertEqual(s4.mood(), ConditionalMood)
 
 
 if __name__ == '__main__':

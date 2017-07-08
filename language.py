@@ -1,7 +1,5 @@
 from nltk import word_tokenize, pos_tag, RegexpParser, Tree, sent_tokenize
-from pattern.en import mood
-from nltk.corpus import wordnet
-from WordnetAdaptor import WnSynonyms
+from adaptors.WordnetAdaptor import WnSynonyms
 
 
 class Word(object):
@@ -42,9 +40,6 @@ class Word(object):
             'attitude': str.lower(self.text) in ATTITUDE_WORDS,
             'being': str.lower(self.text) in BEING_WORDS,
             'nonverb': not self.tag[0] == 'V',
-            'modal': self.tag in ["MD"],
-            'present_tense': self.tag in ["VBP", "VBZ", "VBG"],
-            'past_tense': self.tag in ["VBD", "VBN"],
         }
 
 
@@ -60,7 +55,6 @@ class Sentence(object):
             tag = eachWord[1]
             self.words.append(Word(text, tag))
         self.chunkedSentence = []
-        self.mood = mood(self.text)
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.text == other.text
@@ -102,13 +96,6 @@ class Sentence(object):
             'contains_that': self.contains_word('that'),
             'contains_belief_verb': self.contains_word_type('belief', 'verb'),
             'contains_attitude_verb': self.contains_word_type('attitude', 'verb'),
-            'past_tense': self.contains_word_type('past_tense'),
-            'present_tense': self.contains_word_type('present_tense'),
-            'future_tense': self.contains_word_type('modal'),
-            'indicative_mood': self.mood is 'indicative',
-            'imperative_mood': self.mood is 'imperative',
-            'conditional_mood': self.mood is 'conditional',
-            'subjunctive_mood': self.mood is 'subjunctive',
         }
 
 
