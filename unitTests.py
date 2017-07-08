@@ -129,6 +129,17 @@ class test_language_objects(unittest.TestCase):
         self.assertEqual(True, s3.feature_set()['subjunctive_mood'])
         self.assertEqual(True, s4.feature_set()['conditional_mood'])
 
+class test_invariants(unittest.TestCase):
+    def test_tense(self):
+        self.assertEqual(Word("wanted").Tense(), PastTense)
+        self.assertEqual(Word("wants").Tense(), PresentTense)
+        self.assertEqual(Word("will").ModalVerb(), True)
+
+    def test_sentent_tense(self):
+        self.assertEqual(Sentence("I am eating.").VerbTense(), PresentTense)
+        self.assertEqual(Sentence("I ran earlier today.").VerbTense(), PastTense)
+        self.assertEqual(Sentence("I will eat later after 7pm.").VerbTense(), FutureTense)
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=1)
