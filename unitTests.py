@@ -114,18 +114,18 @@ class test_language_objects(unittest.TestCase):
 
 class test_invariants(unittest.TestCase):
     def test_word_tense(self):
-        self.assertEqual(Word("wanted").tense(), PastTense)
-        self.assertNotEqual(Word("wants").tense(), PastTense)
-        self.assertEqual(Word("wants").tense(), PresentTense)
+        self.assertEqual(Word("wanted").tense().name, 'past')
+        self.assertNotEqual(Word("wants").tense().name, 'past')
+        self.assertEqual(Word("wants").tense().name, 'present')
         self.assertEqual(Word("will").modalVerb(), True)
 
     def test_sentence_tense(self):
-        self.assertEqual(Sentence("I am eating.").verbTense(), PresentTense)
-        self.assertNotEqual(Sentence("I am eating.").verbTense(), PastTense)
-        self.assertEqual(Sentence("I ran earlier today.").verbTense(), PastTense)
-        self.assertNotEqual(Sentence("I ran earlier today.").verbTense(), PresentTense)
-        self.assertEqual(Sentence("I will eat later after 7pm.").verbTense(), FutureTense)
-        self.assertNotEqual(Sentence("I will eat later after 7pm.").verbTense(), PastTense)
+        self.assertEqual(Sentence("I am eating.").verbTense().name, 'present')
+        self.assertNotEqual(Sentence("I am eating.").verbTense().name, 'past')
+        self.assertEqual(Sentence("I ran earlier today.").verbTense().name, 'past')
+        self.assertNotEqual(Sentence("I ran earlier today.").verbTense().name, 'present')
+        self.assertEqual(Sentence("I will eat later after 7pm.").verbTense().name, 'future')
+        self.assertNotEqual(Sentence("I will eat later after 7pm.").verbTense().name, 'past')
 
     # Uses pattern to add grammatical mood to feature set
     def test_sentence_mood_features(self):
@@ -133,11 +133,11 @@ class test_invariants(unittest.TestCase):
         s2 = Sentence("Call her tomorrow.")
         s3 = Sentence("I wish that I were a fast runner.")
         s4 = Sentence("If I feel well, I will sing.")
-        self.assertEqual(s1.mood(), IndicativeMood)
-        self.assertEqual(s2.mood(), ImperativeMood)
-        self.assertNotEqual(s2.mood(), IndicativeMood)
-        self.assertEqual(s3.mood(), SubjunctiveMood)
-        self.assertEqual(s4.mood(), ConditionalMood)
+        self.assertEqual(s1.mood().name, 'indicative')
+        self.assertEqual(s2.mood().name, 'imperative')
+        self.assertNotEqual(s2.mood().name, 'indicative')
+        self.assertEqual(s3.mood().name, 'subjunctive')
+        self.assertEqual(s4.mood().name, 'conditional')
 
 
 if __name__ == '__main__':

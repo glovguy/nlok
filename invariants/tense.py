@@ -1,10 +1,9 @@
-import sys
 from language import Sentence, Word
 
 def tense(word):
     return {
-        word.tag in ["VBD", "VBN"]: PastTense,
-        word.tag in ["VBP", "VBZ", "VBG"]: PresentTense,
+        word.tag in ["VBD", "VBN"]: PAST_TENSE_WORD,
+        word.tag in ["VBP", "VBZ", "VBG"]: PRESENT_TENSE_WORD,
         }.get(True, None)
 
 def modalVerb(word):
@@ -12,42 +11,32 @@ def modalVerb(word):
 
 def verbTense(sent):
     return {
-        PastTense in [w.tense() for w in sent.words]: PastTense,
-        PresentTense in [w.tense() for w in sent.words]: PresentTense,
-        True in [w.modalVerb() for w in sent.words]: FutureTense,
+        PAST_TENSE_WORD in [w.tense() for w in sent.words]: PAST_TENSE_SENTENCE,
+        PRESENT_TENSE_WORD in [w.tense() for w in sent.words]: PRESENT_TENSE_SENTENCE,
+        True in [w.modalVerb() for w in sent.words]: FUTURE_TENSE_SENTENCE,
         }.get(True, None)
 
 
 class WordTenseBase(object):
-    pass
+    def __init__(self, name):
+        self.name = name
 
-class PastTense(WordTenseBase):
-    name = 'past'
-
-class PresentTense(WordTenseBase):
-    name = 'present'
-
-class FutureTense(WordTenseBase):
-    name = 'future'
-
-wordInvariants = [tense, modalVerb]
+PAST_TENSE_WORD = WordTenseBase('past')
+PRESENT_TENSE_WORD = WordTenseBase('present')
+FUTURE_TENSE_WORD = WordTenseBase('future')
 
 class SentenceTenseBase(object):
-    pass
+    def __init__(self, name):
+        self.name = name
 
-class PastTense(SentenceTenseBase):
-    name = 'past'
-
-class PresentTense(SentenceTenseBase):
-    name = 'present'
-
-class FutureTense(SentenceTenseBase):
-    name = 'future'
-
-sentInvariants = [verbTense]
+PAST_TENSE_SENTENCE = SentenceTenseBase('past')
+PRESENT_TENSE_SENTENCE = SentenceTenseBase('present')
+FUTURE_TENSE_SENTENCE = SentenceTenseBase('future')
 
 
 if __name__ != "__main__":
+    wordInvariants = [tense, modalVerb]
+    sentInvariants = [verbTense]
     for inv in wordInvariants:
         setattr(Word, inv.__name__, inv)
     for inv in sentInvariants:
