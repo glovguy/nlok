@@ -4,11 +4,9 @@ Object wrappers for OO development in nltk.
 
 ### Motivation
 
-When exploring the NLTK, I found that it was helpful to create objects to write my code around. I gave these objects helpful methods as well as a `feature_set()` method for machine learning.
+When exploring the NLTK, I found that it was helpful to create objects to write my code around. This began with the need to have one object contain both a word string as well as its part of speech tag.
 
-So if I use NLTK to determine the POS tag of each word in a sentence, I don't have to treat a sentence as a list of lists.
-
-This means I could replace all of those pesky entries of `myword[1]` with `myword.tag` and `myword[0]` with `myword.text`, which greatly improves readability.
+Instead of referencing a word's tag with `myword[1]`, now you can write `myword.tag` and `myword[0]` with `myword.text`, which greatly improves readability.
 
 I've added more as I needed things. For more info, please check out the code and the unit tests, as it is fully tested.
 
