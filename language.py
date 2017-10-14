@@ -5,7 +5,7 @@ from adaptors.WordnetAdaptor import WnSynonyms
 class Word(object):
     """Understands the atomic composition of letters"""
     def __init__(self, text, tag=None):
-        if type(text) == list or type(text) == tuple and tag is None:
+        if isinstance(text, tuple) or isinstance(text, list) and tag is None:
             tag = text[1]
             text = text[0]
         if tag is None: tag = pos_tag([text])[0][1]
@@ -13,21 +13,21 @@ class Word(object):
         self.tag = str(tag)
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and \
-            str.lower(self.text) == str.lower(other.text)
+        return isinstance(other, type(self)) and \
+            self.text.lower() == other.text.lower()
 
     def __hash__(self):
-        return hash(frozenset(self.text))
+        return hash(self.text)
 
     def __str__(self):
         return self.text
 
     def is_type(self, *features):
-        if features[0].__class__ is tuple: features = [e for tupl in features for e in tupl]
+        if isinstance(features[0], tuple): features = [e for tupl in features for e in tupl]
         return False not in [self.feature_set()[f] for f in features]
 
     def is_synonym_of(self, other):
-        if other.__class__ is not Word: other = Word(other)
+        if not isinstance(other, Word): other = Word(other)
         if self.tag != other.tag: return False
         synonyms = WnSynonyms(self)
         return other.text in synonyms
@@ -57,7 +57,7 @@ class Sentence(object):
         self.chunkedSentence = []
 
     def __eq__(self, other):
-        return isinstance(other, self.__class__) and self.text == other.text
+        return isinstance(other, Sentence) and self.text == other.text
 
     def __hash__(self):
         return hash(frozenset(self.text))
@@ -66,7 +66,7 @@ class Sentence(object):
         return self.text
 
     def contains_word(self, word):
-        if word.__class__ is not Word: word = Word(word)
+        if not isinstance(word, Word): word = Word(word)
         return True in [eachWord == word for eachWord in self.words]
 
     def contains_word_type(self, *wordtypes):

@@ -1,3 +1,4 @@
+from collections import namedtuple
 from language import Sentence, Word
 
 def tense(word):
@@ -16,19 +17,12 @@ def verbTense(sent):
         True in [w.modalVerb() for w in sent.words]: FUTURE_TENSE_SENTENCE,
         }.get(True, None)
 
-
-class WordTenseBase(object):
-    def __init__(self, name):
-        self.name = name
-
+WordTenseBase = namedtuple('WordTenseBase', 'name')
 PAST_TENSE_WORD = WordTenseBase('past')
 PRESENT_TENSE_WORD = WordTenseBase('present')
 FUTURE_TENSE_WORD = WordTenseBase('future')
 
-class SentenceTenseBase(object):
-    def __init__(self, name):
-        self.name = name
-
+SentenceTenseBase = namedtuple('WordTenseBase', 'name')
 PAST_TENSE_SENTENCE = SentenceTenseBase('past')
 PRESENT_TENSE_SENTENCE = SentenceTenseBase('present')
 FUTURE_TENSE_SENTENCE = SentenceTenseBase('future')
