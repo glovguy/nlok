@@ -1,5 +1,5 @@
 nltk==3.9
 coverage==4.4.1
 six==1.10.0
-setuptools==36.0.1
+setuptools==70.0.0
 -e git://github.com/pattern3/pattern.git@8e7e0f8885d847e5d2d47c2fd0602eb0159c43a2#egg=pattern
